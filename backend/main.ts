@@ -1,0 +1,14 @@
+import { Application } from "./deps.ts"
+import healthRouter from "./src/controllers/healthController.ts";
+import userRouter from "./src/controllers/userController.ts";
+
+const app = new Application();
+
+
+app.use(userRouter.routes());
+app.use(healthRouter.routes());
+app.use(userRouter.allowedMethods());
+app.use(healthRouter.allowedMethods());
+
+console.log("😈 Server is running on http://localhost:8000")
+await app.listen({ port: 8000});
