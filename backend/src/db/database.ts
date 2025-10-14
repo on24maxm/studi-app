@@ -16,7 +16,7 @@ try {
   const connection = await pool.getConnection();
   console.log('😈 Successfully connected to MariaDB');
   connection.release();
-} catch(error) {
+} catch(_error) {
   console.log("😈 Connection not successfull");
 }
 
