@@ -1,11 +1,19 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <header>
+    <nav>
+      <router-link to="/login">Login</router-link> |
+      <router-link to="/register">Registrieren</router-link>
+    </nav>
+  </header>
+
+  <main>
+    <router-view></router-view>
+  </main>
+
+  <footer>
+    </footer>
 </template>
 
 <style scoped></style>

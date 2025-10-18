@@ -1,10 +1,18 @@
-import { Application } from "./deps.ts"
+import { Application, oakCors } from "./deps.ts"
 import healthRouter from "./src/controllers/healthController.ts";
 import userRouter from "./src/controllers/userController.ts";
 import deckRouter from "./src/controllers/deckController.ts";
 import cardRouter from "./src/controllers/cardController.ts";
+import learningSessionRouter from "./src/controllers/learningController.ts";
 
 const app = new Application();
+
+app.use(
+  oakCors({
+    origin: "http://localhost:5173", // Allow requests ONLY from your Vue app's origin
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  }),
+);
 
 
 app.use(userRouter.routes());
@@ -15,6 +23,8 @@ app.use(deckRouter.routes());
 app.use(deckRouter.allowedMethods());
 app.use(cardRouter.routes());
 app.use(cardRouter.allowedMethods());
+app.use(learningSessionRouter.routes());
+app.use(learningSessionRouter.allowedMethods());
 
 console.log("😈 Server is running on http://localhost:8000")
 await app.listen({ port: 8000});
