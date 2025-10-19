@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
 import {useRouter} from 'vue-router'
 import {useAuthStore} from '../stores/authStore'
 import apiService from '../services/apiService.ts'
@@ -12,6 +12,12 @@ const authStore = useAuthStore();
 const username = ref('');
 const password = ref('');
 const errorMessage = ref('');
+
+onMounted(() => {
+    if (authStore.isAuthenticated) {
+        router.push('/dashboard');
+    }
+})
 
 const handleRegister = async () => {
     errorMessage.value = '';
@@ -34,7 +40,7 @@ const handleRegister = async () => {
         <form @submit.prevent="handleRegister" class="flex flex-col items-center">
             <input class="border m-2 p-1" placeholder="Benutzername" v-model="username"></input>
             <input class="border m-2 p-1" placeholder="Passwort" type="password" v-model="password"></input>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded m-2">Login</button>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded m-2">Registrieren</button>
             <p v-if="errorMessage" class="text-red-500 font-sans text-sm">{{ errorMessage }}</p>
         </form>
         <p>Du hast bereits ein Konto? <router-link to="/login" class="text-blue-500 underline">Jetzt Einloggen!</router-link></p>

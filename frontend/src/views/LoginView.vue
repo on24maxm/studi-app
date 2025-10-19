@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
 import {useRouter} from 'vue-router'
 import {useAuthStore} from '../stores/authStore'
 import apiService from '../services/apiService.ts'
@@ -11,6 +11,12 @@ const username = ref('');
 const password = ref('');
 const errorMessage = ref('');
 
+onMounted(() => {
+    if (authStore.isAuthenticated) {
+        router.push('/dashboard');
+    }
+})
+
 const handlelogin = async () => {
     errorMessage.value = '';
     try {
@@ -18,7 +24,7 @@ const handlelogin = async () => {
             
             if(response.data && response.data.token) {
                 authStore.setToken(response.data.token);
-                console.log('Token: ' + authStore.token);
+                router.push('/dashboard');
             }
     }
     catch(error) {
