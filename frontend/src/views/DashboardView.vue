@@ -32,7 +32,15 @@ const fetchDecks = async () => {
     }
 }
 
+const checkIfLogin = () => {
+    if(!authStore.isAuthenticated) {
+        router.push('/login');
+    }
+}
+
+
 onMounted(()=> {
+    checkIfLogin();
     fetchDecks();
 })
 
@@ -46,16 +54,21 @@ const logout = () => {
 </script>
 
 <template>
-    <h1> Dashboard: </h1>
-    <div v-if="isLoading">Lade Stapel...</div>
-    <div v-else>
-        <h2> Deine Stapel: </h2>
-        <ul>
-            <li class="flex flex-col justify-center items-center w-screen gap-8 pb-20 bg-gray-100" v-for="deck in decks" :key="deck.id">{{ deck.name }}</li>
-        </ul>
-        <p v-if="decks.length === 0 ">Du hast noch keine Stapel.
-        </p>
-        <button class="bg-blue-500 text-white p-2 rounded m-2" @click="logout">Logout</button>
-    </div>
+    <nav class="bg-[#0F2937] w-full"> <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-end"> 
+                <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="logout">Logout</button>
+            </div>
+        </div>
+    </nav>
 
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-4"> 
+        <div v-if="isLoading">Lade Stapel...</div>
+        <div v-else>
+            <ul class="">
+                <li class="flex font-sans text-[20px] flex-col justify-center flex-start pl-15 w-full gap-8 py-7 mb-5 bg-[#0F2937] rounded-2xl text-white" v-for="deck in decks" :key="deck.id">{{ deck.name }}</li>
+            </ul>
+            <p v-if="decks.length === 0 ">Du hast noch keine Stapel.
+            </p>
+        </div>
+    </div>
 </template>

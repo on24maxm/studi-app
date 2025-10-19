@@ -9,8 +9,8 @@ const app = new Application();
 
 app.use(
   oakCors({
-    origin: "http://localhost:5173", // Allow requests ONLY from your Vue app's origin
-    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+    origin: "http://localhost:5173",
+    optionsSuccessStatus: 200,
   }),
 );
 

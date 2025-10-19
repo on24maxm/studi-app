@@ -10,16 +10,21 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView
+      ,
+      meta: { hideNavbar: false }
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterView
+      ,
+      meta: { hideNavbar: false }
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: DashboardView
+      component: DashboardView,
+      meta: { hideNavbar: true }
     },
   ]
 })
