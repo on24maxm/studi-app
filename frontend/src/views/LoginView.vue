@@ -26,6 +26,9 @@ const handlelogin = async () => {
                 authStore.setToken(response.data.token);
                 router.push('/dashboard');
             }
+            else{
+                next;
+            }
     }
     catch(error) {
         console.error('Anmeldung fehlgeschlagen!', error);

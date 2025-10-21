@@ -32,15 +32,8 @@ const fetchDecks = async () => {
     }
 }
 
-const checkIfLogin = () => {
-    if(!authStore.isAuthenticated) {
-        router.push('/login');
-    }
-}
-
 
 onMounted(()=> {
-    checkIfLogin();
     fetchDecks();
 })
 
