@@ -35,4 +35,10 @@ export default {
     createDeck(name: string) {
         return apiClient.post('/decks', { name });
     },
+    updateDeck(id: number, name: string) {
+    return apiClient.patch(`/decks/${id}`, { name });
+  },
+  deleteDeck(id: number) {
+    return apiClient.delete(`/decks/${id}`);
+  },
 }

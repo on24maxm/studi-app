@@ -8,6 +8,12 @@ import type { Deck } from '@/backend/src/models/deck.ts'
 const router = useRouter();
 const authStore = useAuthStore();
 
+
+const renamingDeck = ref<Deck | null>(null);
+const renameName = ref('');
+const renameError = ref<string | null>(null);
+
+
 const decks = ref<Deck[]>([]);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
@@ -69,6 +75,55 @@ const createNewDeck = async () => {
     }
 }
 
+const startRename = (deck: Deck) => {
+    renamingDeck.value = deck;
+    renameName.value = deck.name;
+    renameError.value = null;
+}
+
+const cancelRename = () => {
+    renamingDeck.value = null;
+}
+
+const confirmRename = async () => {
+    if(!renameName.value.trim()) return;
+
+    renameError.value = null;
+    const deckToUpdate = renamingDeck.value;
+
+    if(!deckToUpdate) return;
+
+    try {
+        const response = await apiService.updateDeck(deckToUpdate.id, renameName.value);
+
+        const index = decks.value.findIndex((deck: Deck) => deck.id === deckToUpdate.id);
+        if (index !== -1) {
+            decks.value[index] = response.data;
+        }
+        await fetchDecks();
+        cancelRename();
+    }
+    catch(error: any) {
+        console.error('Ein Fehler ist aufgetreten: ', error);
+        renameError.value = 'Ein Fehler ist aufgetreten';
+    }
+}
+
+const deleteDeck = async (deckId: number) => {
+    if(!confirm('Sicher, dass du diesen Stapel löschen willst?')) {
+        return;
+    }
+
+    try {
+        await apiService.deleteDeck(deckId);
+        decks.value = decks.value.filter((deck: Deck) => deck.id !== deckId);
+        await fetchDecks();
+    }
+    catch(error: any) {
+        console.error('Ein Fehler beim löschen ist aufgetreten: ', error);
+        renameError.value = 'Ein Fehler beim löschen ist aufgetreten';
+    }
+}
 
 onMounted(()=> {
     fetchDecks();
@@ -93,9 +148,17 @@ const logout = () => {
         </form>
         <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="openCloseModalCreateDeck">Schließen</button>
         </div>
-
     </div>
-    <div :class="{ 'blur-lg': openDeckModal, 'pointer-events-none': openDeckModal }">
+    <div v-if="renamingDeck" class="fixed inset-0 z-50 flex flex-col justify-center items-center">
+            <div class="w-[500px bg-gray-600 p-10 rounded-lg flex flex flex-col justify-center">
+            <h3>Stapel umbenennen</h3>
+            <input class="text-white outline-2 outline-white p-2 rounded-lg" type="text" v-model="renameName"></input>
+            <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" @click="confirmRename">Speichern</button>
+            <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" @click="cancelRename">Abbrechen</button>
+            <p v-if="renameError">{{ renameError }}</p>
+            </div>
+        </div>
+    <div :class="{ 'blur-lg': openDeckModal || renamingDeck, 'pointer-events-none': openDeckModal || renamingDeck }">
     <nav class="bg-[#0F2937] w-full"> <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-end"> 
                 <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="logout">Logout</button>
@@ -108,7 +171,12 @@ const logout = () => {
         <div v-if="isLoading">Lade Stapel...</div>
         <div v-else>
             <ul class="">
-                <li class="flex font-sans text-[20px] flex-col justify-center flex-start pl-15 w-full gap-8 py-7 mb-5 bg-[#0F2937] rounded-2xl text-white" v-for="deck in decks" :key="deck.id">{{ deck.name }}</li>
+                <li class="flex font-sans text-[20px] flex-col justify-center flex-start pl-15 w-full gap-8 py-7 mb-5 bg-[#0F2937] rounded-2xl text-white" v-for="deck in decks" :key="deck.id">{{ deck.name }}
+                <div class="flex gap-2">
+                    <button class="text-white rounded-lg m-2 pl-8 pr-8 bg-[#B88A93] text-wrap" @click="startRename(deck)">Umbennenen</button>
+                    <button class="text-white rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="deleteDeck(deck.id)">Löschen</button>
+                </div>
+                </li>
             </ul>
             <p v-if="decks.length === 0 ">Du hast noch keine Stapel.
             </p>
