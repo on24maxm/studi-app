@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import DeckDetailView from '../views/DeckDetailView.vue'
 import { useAuthStore } from '../stores/authStore.ts';
 
 
@@ -32,6 +33,12 @@ const router = createRouter({
       component: DashboardView,
       meta: { hideNavbar: true, requiresAuth: true }
     },
+    {
+      path: '/decks/:deckId',
+      name: 'deck-detail',
+      component: DeckDetailView,
+      meta: { requiresAuth: true }
+    }
   ]
 })
 

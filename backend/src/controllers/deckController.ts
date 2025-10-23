@@ -67,4 +67,19 @@ deckRouter.delete("/api/decks/:id", async (ctx) => {
     
 })
 
+deckRouter.get("/api/decks/:id", async (ctx) => {
+    const deckId = Number(ctx.params.id);
+    const user_id = ctx.state.userId;
+
+    const deck = await deckService.getDeckById(user_id, deckId);
+    if(!deck) {
+        ctx.response.status = 404;
+        ctx.response.body = {error: "Deck konnte nicht gefunden werden!"};
+        return;
+    }
+
+    ctx.response.status = 200;
+    ctx.response.body = deck;
+})
+
 export default deckRouter;

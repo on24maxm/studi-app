@@ -171,7 +171,8 @@ const logout = () => {
         <div v-if="isLoading">Lade Stapel...</div>
         <div v-else>
             <ul class="">
-                <li class="flex font-sans text-[20px] flex-col justify-center flex-start pl-15 w-full gap-8 py-7 mb-5 bg-[#0F2937] rounded-2xl text-white" v-for="deck in decks" :key="deck.id">{{ deck.name }}
+                <li class="flex font-sans text-[20px] flex-col justify-center flex-start pl-15 w-full gap-8 py-7 mb-5 bg-[#0F2937] rounded-2xl text-white" v-for="deck in decks" :key="deck.id">
+                    <router-link :to="`/decks/${deck.id}`">{{ deck.name  }}</router-link>
                 <div class="flex gap-2">
                     <button class="text-white rounded-lg m-2 pl-8 pr-8 bg-[#B88A93] text-wrap" @click="startRename(deck)">Umbennenen</button>
                     <button class="text-white rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="deleteDeck(deck.id)">Löschen</button>

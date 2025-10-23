@@ -28,4 +28,19 @@ export class DeckService {
 
         return affectedRow.affectedRows > 0
     }
+
+    async getDeckById(userId: number, deckId: number): Promise<Deck | null> {
+        const [rows] = await pool.execute(
+        'SELECT id, user_id, name, createdAt, lastChanged FROM decks WHERE user_id = ? AND id = ?',
+        [userId, deckId]
+        );
+
+        const decks = rows as unknown as Deck[];
+
+        if (decks.length > 0) {
+            return decks[0];
+        } else {
+            return null;
+        }
+    }
 }

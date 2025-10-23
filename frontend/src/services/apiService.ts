@@ -38,7 +38,22 @@ export default {
     updateDeck(id: number, name: string) {
     return apiClient.patch(`/decks/${id}`, { name });
   },
-  deleteDeck(id: number) {
+    deleteDeck(id: number) {
     return apiClient.delete(`/decks/${id}`);
-  },
+    },
+    getDeckById(id: number) {
+    return apiClient.get(`/decks/${id}`);
+    },
+    getCardsForDeck(deckId: number) {
+    return apiClient.get(`/decks/${deckId}/cards`);
+    },
+    createCard(deckId: number, front: string, back: string) {
+    return apiClient.post(`/decks/${deckId}/cards`, { front, back });
+    },
+    updateCard(cardId: number, front: string, back: string, deckId: number) {
+    return apiClient.patch(`/decks/${deckId}/cards/${cardId}`, { front, back });
+    },
+    deleteCard(cardId: number, deckId: number) {
+    return apiClient.delete(`/decks/${deckId}/cards/${cardId}`);
+    },
 }
