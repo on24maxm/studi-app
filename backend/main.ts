@@ -11,6 +11,8 @@ app.use(
   oakCors({
     origin: "http://localhost:5173",
     optionsSuccessStatus: 200,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   }),
 );
 

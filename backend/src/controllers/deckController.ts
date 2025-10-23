@@ -24,7 +24,7 @@ deckRouter.post("/api/decks", async (ctx) => {
         return;
     }
 
-    const newDeck = await deckService.createDeck(user_id, name);
+    const newDeck = await deckService.createDeck(name, user_id);
     ctx.response.status = 201;
     ctx.response.body = newDeck;
 })

@@ -32,7 +32,7 @@ export default {
     getDecks() {
         return apiClient.get('/decks');
     },
-    createDeck() {
-        return apiClient.post('/decks');
+    createDeck(name: string) {
+        return apiClient.post('/decks', { name });
     },
 }

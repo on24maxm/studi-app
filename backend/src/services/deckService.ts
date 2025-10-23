@@ -7,8 +7,8 @@ export class DeckService {
         return rows as unknown as Deck[];
     }
 
-    async createDeck(userId: number, name: string): Promise<Deck> {
-        const [result] = await pool.execute(`INSERT INTO decks (user_id, name) VALUES (?, ?)`, [userId, name]);
+    async createDeck(name: string, userId: number): Promise<Deck> {
+        const [result] = await pool.execute(`INSERT INTO decks (name, user_id) VALUES (?, ?)`, [name, userId]);
         const insertResult = result as unknown as ({ insertId: number })
 
         const resultDeck = await pool.execute(`SELECT * FROM DECKS WHERE ID = ?`, [insertResult.insertId]);
