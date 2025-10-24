@@ -11,10 +11,11 @@
         <p v-if="createCardSuccess" class="text-green-500 font-sans text-sm">Karte erfolgreich hinzugefügt!</p>
         </div>
     </div>
-    <div :class="{ 'blur-lg': createCardModal, 'pointer-events-none': createCardModal }">
+    <div :class="{ createCardModal, 'pointer-events-none': createCardModal }">
         <nav class="bg-[#0F2937] w-full">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-end">
+                <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" @click="startLearning">Lernsitzung starten</button>
                 <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" @click="openCloseModalCreateCard">Neue Karte hinzufügen</button>
                 <router-link to="/dashboard" class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93] text-wrap">Zum
                     Dashboard</router-link>
@@ -30,8 +31,8 @@
             <h1 class="font-sans text-2xl pb-2">{{ deck.name }}</h1>
             <h2 class="font-sans">Karten in diesem Stapel:</h2>
             <ul>
-                <li v-for="card in cards" :key="card.id">
-                    <div class="card-front" @click="showCardDetailsFunc(card)">{{ card.front }}</div>
+                <li v-for="card in cards" :key="card.id" class="border-2 border-gray-300 mb-2 rounded-lg" @click="showCardDetailsFunc(card)">
+                    <div class="card-front pl-2" >Vorderseite: {{ card.front }}</div>
                     <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" @click="deleteCard(card.id)">Löschen</button>
                 </li>
             </ul>
@@ -40,12 +41,12 @@
         <div v-else>
             <p>Stapel nicht gefunden.</p>
         </div>
-        <div v-if="showCardDetails" class="flex-1 h-full pl-2 pt-2 overflow-y-auto">
+        <div v-if="showCardDetails" class="flex-1 h-full pl-8 pt-2 overflow-y-auto">
             <h2 class="font-sans text-2xl pb-2">Kartendetails</h2>
             <h3>Vorderseite</h3>
             <textarea class="min-h-[100px] min-w-[600px] outline-2 outline-black p-2 rounded-lg" v-model="cardDetailViewFront">{{ cardDetailViewFront }}</textarea>
             <h3>Rückseite</h3>
-            <textarea class="min-h-[100px] min-w-[600px] outline-2 outline-black pt-2 rounded-lg" v-model="cardDetailViewBack">{{ cardDetailViewBack }}</textarea>
+            <textarea class="min-h-[100px] min-w-[600px] outline-2 outline-black p-2 rounded-lg" v-model="cardDetailViewBack">{{ cardDetailViewBack }}</textarea>
             <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" @click="confirmEditCard">Änderungen speichern</button>
         </div>
         </div>
@@ -195,6 +196,22 @@ const fetchDeckDetails = async () => {
     deck.value = null;
   } finally {
   }
+};
+
+const startLearning = async () => {
+    if (!deckId.value) return;
+    if(cards.value.length === 0) {
+        alert("Dieser Stapel enthält noch keine Karten.");
+        return;
+    }
+    console.log(`Starte Lernsitzung für Deck ${deckId.value}`);
+    try {
+        router.push(`/learn/${deckId.value}`);
+
+    } catch (err) {
+        console.error("Fehler beim Starten der Lernsitzung:", err);
+        alert("Lernsitzung konnte nicht gestartet werden.");
+    }
 };
 
 

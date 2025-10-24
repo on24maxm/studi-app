@@ -56,4 +56,10 @@ export default {
     deleteCard(cardId: number, deckId: number) {
     return apiClient.delete(`/decks/${deckId}/cards/${cardId}`);
     },
+    startLearningSession(deckId: number) {
+    return apiClient.post(`/decks/${deckId}/learning-session/start`, { deckId });
+    },
+    rateCard(cardId: number, rating: "nochmal" | "mittel" | "gut") {
+    return apiClient.post(`/learning-session/rate`, { cardId, rating });
+    }
 }

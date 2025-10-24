@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import DeckDetailView from '../views/DeckDetailView.vue'
+import LearningSessionView from '../views/LearningSessionView.vue'
 import { useAuthStore } from '../stores/authStore.ts';
 
 
@@ -37,7 +38,13 @@ const router = createRouter({
       path: '/decks/:deckId',
       name: 'deck-detail',
       component: DeckDetailView,
-      meta: { requiresAuth: true }
+      meta: { hideNavbar: true, requiresAuth: true }
+    },
+    {
+      path: '/learn/:deckId',
+      name: 'learn',
+      component: LearningSessionView,
+      meta: { hideNavbar: true, requiresAuth: true }
     }
   ]
 })

@@ -161,8 +161,8 @@ const logout = () => {
     <div :class="{ 'blur-lg': openDeckModal || renamingDeck, 'pointer-events-none': openDeckModal || renamingDeck }">
     <nav class="bg-[#0F2937] w-full"> <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-end"> 
-                <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="logout">Logout</button>
                 <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93] text-wrap" @click="openCloseModalCreateDeck">Stapel hinzufügen</button>
+                <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="logout">Logout</button>
             </div>
         </div>
     </nav>
