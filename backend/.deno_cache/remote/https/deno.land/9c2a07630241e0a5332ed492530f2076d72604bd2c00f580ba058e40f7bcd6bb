@@ -1,0 +1,81 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+// This file contains the external dependencies that oak depends upon
+
+// jsr dependencies
+
+export { assert } from "jsr:@std/assert@^1.0/assert";
+export { concat } from "jsr:@std/bytes@^1.0/concat";
+export {
+  eTag,
+  type ETagOptions,
+  type FileInfo,
+  ifNoneMatch,
+} from "jsr:@std/http@^1.0/etag";
+export {
+  accepts,
+  acceptsEncodings,
+  acceptsLanguages,
+} from "jsr:@std/http@^1.0/negotiation";
+export { UserAgent } from "jsr:@std/http@^1.0/user-agent";
+export { contentType } from "jsr:@std/media-types@^1.0/content-type";
+export {
+  basename,
+  extname,
+  isAbsolute,
+  join,
+  normalize,
+  parse,
+  SEPARATOR,
+} from "jsr:@std/path@^1.0/";
+
+// 3rd party dependencies
+
+export {
+  SecureCookieMap,
+  type SecureCookieMapGetOptions,
+  type SecureCookieMapSetDeleteOptions,
+} from "jsr:@oak/commons@^1.0/cookie_map";
+export { parse as parseFormData } from "jsr:@oak/commons@^1.0/form_data";
+export { parse as parseForwarded } from "jsr:@oak/commons@^1.0/forwarded";
+export {
+  createHttpError,
+  errors,
+  HttpError,
+  type HttpErrorOptions,
+  isHttpError,
+} from "jsr:@oak/commons@^1.0/http_errors";
+export { KeyStack } from "jsr:@oak/commons@^1.0/keystack";
+export { matches } from "jsr:@oak/commons@^1.0/media_types";
+export { type HttpMethod as HTTPMethods } from "jsr:@oak/commons@^1.0/method";
+export {
+  type ByteRange,
+  range,
+  responseRange,
+} from "jsr:@oak/commons@^1.0/range";
+export {
+  ServerSentEvent,
+  type ServerSentEventInit,
+  ServerSentEventStreamTarget,
+  type ServerSentEventTarget,
+  type ServerSentEventTargetOptions,
+} from "jsr:@oak/commons@^1.0/server_sent_event";
+export {
+  type ErrorStatus,
+  isErrorStatus,
+  isRedirectStatus,
+  type RedirectStatus,
+  Status,
+  STATUS_TEXT,
+} from "jsr:@oak/commons@^1.0/status";
+
+export {
+  compile,
+  type Key,
+  parse as pathParse,
+  type ParseOptions,
+  pathToRegexp,
+  type TokensToRegexpOptions,
+} from "npm:path-to-regexp@^6.3.0";
+
+// denoCacheMetadata={"headers":{"x-amz-cf-id":"PojdvDsAwIAYAQYI-zGigdibCLsl2yfb5_gkmlcVWTm0AVNmPuSXHA==","x-amz-cf-pop":"FRA56-P5","x-cache":"Hit from cloudfront","content-length":"1988","x-amz-replication-status":"PENDING","cross-origin-embedder-policy":"same-origin","referrer-policy":"strict-origin-when-cross-origin","date":"Fri, 08 Aug 2025 23:08:45 GMT","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-content-type-options":"nosniff","cross-origin-opener-policy":"same-origin","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","x-amz-server-side-encryption":"AES256","cross-origin-resource-policy":"same-origin","cache-control":"public, max-age=31536000, immutable","etag":"\"c1f1abf397ba72dc93bdc2cb5e101318\"","server":"deno/gcp-europe-west3","x-amz-version-id":"9D5fW7dMIurGd_raNkSs_rrpQk46duce","accept-ranges":"bytes","x-frame-options":"DENY","strict-transport-security":"max-age=63072000; includeSubDomains; preload","age":"7573205","access-control-allow-origin":"*","via":"http/2 edgeproxy-h","server-timing":"fetchSource;dur=12","content-type":"application/typescript; charset=utf-8","vary":"Accept-Encoding, Origin"},"url":"https://deno.land/x/oak@v17.1.6/deps.ts","time":1762267729}

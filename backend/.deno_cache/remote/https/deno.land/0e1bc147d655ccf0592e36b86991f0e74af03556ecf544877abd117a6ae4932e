@@ -1,0 +1,84 @@
+import type { CorsOptions, CorsOptionsDelegate } from "./types.ts";
+import { Cors } from "./cors.ts";
+
+interface Req {
+  method: string;
+  headers: {
+    get(headerKey: string): string | null | undefined;
+  };
+}
+
+interface Res {
+  status?: number | string;
+  headers: {
+    get(headerKey: string): string | null | undefined;
+    set(headerKey: string, headerValue: string): any;
+  };
+}
+
+/**
+ * oakCors middleware wrapper
+ * @param o CorsOptions | CorsOptionsDelegate
+ * @link https://github.com/tajpouria/cors/blob/master/README.md#cors
+ */
+export const oakCors = <
+  RequestT extends Req = any,
+  ResponseT extends Res = any,
+  MiddlewareT extends (
+    context: { request: RequestT; response: ResponseT },
+    next: (...args: any) => any,
+  ) => any = any,
+>(
+  o?: CorsOptions | CorsOptionsDelegate<RequestT>,
+) => {
+  const corsOptionsDelegate = Cors.produceCorsOptionsDelegate<
+    CorsOptionsDelegate<RequestT>
+  >(o);
+
+  return (async ({ request, response }, next) => {
+    try {
+      const options = await corsOptionsDelegate(request);
+
+      const corsOptions = Cors.produceCorsOptions(options || {});
+      const originDelegate = Cors.produceOriginDelegate(corsOptions);
+
+      if (originDelegate) {
+        const requestMethod = request.method;
+        const getRequestHeader = (headerKey: string) =>
+          request.headers.get(headerKey);
+        const getResponseHeader = (headerKey: string) =>
+          response.headers.get(headerKey);
+        const setResponseHeader = (headerKey: string, headerValue: string) =>
+          response.headers.set(headerKey, headerValue);
+        const setStatus = (
+          statusCode: number,
+        ) => (response.status = statusCode);
+        const end = () => {};
+
+        const origin = await originDelegate(getRequestHeader("origin"));
+
+        if (!origin) next();
+        else {
+          corsOptions.origin = origin;
+
+          return new Cors({
+            corsOptions,
+            requestMethod,
+            getRequestHeader,
+            getResponseHeader,
+            setResponseHeader,
+            setStatus,
+            next,
+            end,
+          }).configureHeaders();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    next();
+  }) as MiddlewareT;
+};
+
+// denoCacheMetadata={"headers":{"x-amz-version-id":"qi.Qwp9eovypjYhnoSZGBz_DcX12vVg_","cross-origin-embedder-policy":"same-origin","x-cache":"Hit from cloudfront","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","x-content-type-options":"nosniff","x-amz-cf-pop":"FRA56-P5","cross-origin-resource-policy":"same-origin","x-amz-replication-status":"COMPLETED","accept-ranges":"bytes","etag":"\"b5ec08bea08fb71b26aa7cc5fdc9267a\"","content-type":"application/typescript; charset=utf-8","referrer-policy":"strict-origin-when-cross-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","age":"23289415","x-amz-cf-id":"UUagv1XMjj8wi8FXcPdzWJa95qM-Pp1TcAQ6tg2BfCrmlFqToENrUA==","content-length":"2255","via":"http/2 edgeproxy-h","cross-origin-opener-policy":"same-origin","last-modified":"Wed, 26 May 2021 10:15:33 GMT","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","vary":"Accept-Encoding, Origin","date":"Sat, 08 Feb 2025 01:31:55 GMT","server":"deno/gcp-europe-west3","x-frame-options":"DENY","server-timing":"fetchSource;dur=6"},"url":"https://deno.land/x/cors@v1.2.2/oakCors.ts","time":1762267728}

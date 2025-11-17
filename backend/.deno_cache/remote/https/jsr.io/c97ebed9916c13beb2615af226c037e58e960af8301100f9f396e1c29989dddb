@@ -1,0 +1,12 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// Copyright the Browserify authors. MIT License.
+// Ported from https://github.com/browserify/path-browserify/
+// This module is browser compatible.
+
+import { CHAR_FORWARD_SLASH } from "../_common/constants.ts";
+
+export function isPosixPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH;
+}
+
+// denoCacheMetadata={"headers":{"age":"2918","content-type":"text/typescript","access-control-expose-headers":"*","x-goog-storage-class":"STANDARD","cross-origin-resource-policy":"cross-origin","x-content-type-options":"nosniff","x-jsr-cache-id":"FRA","x-jsr-cache-status":"hit","access-control-allow-origin":"*","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-robots-tag":"noindex","etag":"\"2760ff79c454402db468f7d3e68c3728\"","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-length":"370","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-guploader-uploadid":"AOCedOGZLge2f_7MAlfNbQMrZcPBTUmzW5nKnr5UAn5ZFSKxnTh7jEbLOat6_ChtW6g_S2z_iQi26h8","x-goog-generation":"1755088699405439","server":"UploadServer","x-goog-stored-content-length":"370","x-goog-hash":"crc32c=JsP54A==,md5=J2D/ecRUQC20aPfT5ow3KA==","x-goog-stored-content-encoding":"identity","x-goog-metageneration":"1","accept-ranges":"bytes","via":"1.1 google","date":"Tue, 04 Nov 2025 14:00:11 GMT","expires":"Wed, 04 Nov 2026 14:00:11 GMT","cache-control":"public, max-age=31536000, immutable"},"url":"https://jsr.io/@std/path/1.1.2/posix/_util.ts","time":1762267730}

@@ -18,8 +18,20 @@ export const authMiddleware = async (ctx: RouterContext<string>, next: () => Pro
         ctx.state.userId = payload.payload.id;
         await next();
     } catch (error) {
+        let errorMessage = "Unbekannter Autorisiierungsfehler";
+
+        if (error instanceof Error) {
+            errorMessage = error.message;
+        } 
+        else if (typeof error === 'string') {
+            errorMessage = error;
+        }
+
         ctx.response.status = 401;
-        ctx.response.body = {error: "Token stimmt nicht überein"}
+        ctx.response.body = {
+            error: "Autorisierung fehlgeschlagen",
+            details: errorMessage
+        };
         return;
     }
 }

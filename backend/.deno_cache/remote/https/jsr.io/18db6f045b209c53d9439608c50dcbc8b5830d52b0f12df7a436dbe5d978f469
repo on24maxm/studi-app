@@ -1,0 +1,30 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// Copyright the Browserify authors. MIT License.
+// Ported from https://github.com/browserify/path-browserify/
+// This module is browser compatible.
+
+import {
+  CHAR_BACKWARD_SLASH,
+  CHAR_FORWARD_SLASH,
+  CHAR_LOWERCASE_A,
+  CHAR_LOWERCASE_Z,
+  CHAR_UPPERCASE_A,
+  CHAR_UPPERCASE_Z,
+} from "../_common/constants.ts";
+
+export function isPosixPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH;
+}
+
+export function isPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
+}
+
+export function isWindowsDeviceRoot(code: number): boolean {
+  return (
+    (code >= CHAR_LOWERCASE_A && code <= CHAR_LOWERCASE_Z) ||
+    (code >= CHAR_UPPERCASE_A && code <= CHAR_UPPERCASE_Z)
+  );
+}
+
+// denoCacheMetadata={"headers":{"x-guploader-uploadid":"AOCedOEzInVMTEy3p1oo78fWK9H4Q2AO26pQLUGDQyja-RQyb-RTD7LCoBW3Lu7petfb7kMtVK80mtQ","x-goog-hash":"crc32c=OPG2uA==,md5=p0btXuS0FXwstBt7hC4VbQ==","x-goog-metageneration":"1","expires":"Wed, 04 Nov 2026 14:00:11 GMT","etag":"\"a746ed5ee4b4157c2cb41b7b842e156d\"","date":"Tue, 04 Nov 2025 14:00:11 GMT","access-control-allow-origin":"*","access-control-expose-headers":"*","x-goog-generation":"1755088699355192","content-type":"text/typescript","x-jsr-cache-status":"hit","x-goog-stored-content-encoding":"identity","x-goog-storage-class":"STANDARD","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","via":"1.1 google","x-goog-stored-content-length":"807","age":"2918","cache-control":"public, max-age=31536000, immutable","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","accept-ranges":"bytes","x-robots-tag":"noindex","content-length":"807","x-jsr-cache-id":"FRA","server":"UploadServer","cross-origin-resource-policy":"cross-origin","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"},"url":"https://jsr.io/@std/path/1.1.2/windows/_util.ts","time":1762267730}

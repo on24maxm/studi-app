@@ -1,0 +1,53 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+/*!
+ * Adapted directly from negotiator at https://github.com/jshttp/negotiator/
+ * which is licensed as follows:
+ *
+ * (The MIT License)
+ *
+ * Copyright (c) 2012-2014 Federico Romero
+ * Copyright (c) 2012-2014 Isaac Z. Schlueter
+ * Copyright (c) 2014-2015 Douglas Christopher Wilson
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * 'Software'), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+export interface Specificity {
+  i: number;
+  o: number | undefined;
+  q: number;
+  s: number | undefined;
+}
+
+export function compareSpecs(a: Specificity, b: Specificity): number {
+  return (
+    b.q - a.q ||
+    (b.s ?? 0) - (a.s ?? 0) ||
+    (a.o ?? 0) - (b.o ?? 0) ||
+    a.i - b.i ||
+    0
+  );
+}
+
+export function isQuality(spec: Specificity): boolean {
+  return spec.q > 0;
+}
+
+// denoCacheMetadata={"headers":{"expires":"Wed, 04 Nov 2026 14:33:20 GMT","x-goog-hash":"crc32c=89Ulmg==,md5=2ueNoYkR9iQetg0Plv4Ysw==","x-goog-storage-class":"STANDARD","via":"1.1 google","accept-ranges":"bytes","date":"Tue, 04 Nov 2025 14:33:20 GMT","x-goog-generation":"1753190120053187","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","cross-origin-resource-policy":"cross-origin","cache-control":"public, max-age=31536000, immutable","content-type":"text/typescript","x-robots-tag":"noindex","access-control-allow-origin":"*","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-metageneration":"1","x-jsr-cache-status":"hit","x-goog-stored-content-length":"1802","access-control-expose-headers":"*","content-length":"1802","etag":"\"dae78da18911f6241eb60d0f96fe18b3\"","x-content-type-options":"nosniff","server":"UploadServer","age":"929","x-jsr-cache-id":"FRA","x-guploader-uploadid":"AOCedOHylz1G3FeX7z14kPyeRCFDOXL-PEguwOmZ6V3U-D-Z1VE0gKSEDAorp4ioNx96w0KZ-K1HkMg","x-goog-stored-content-encoding":"identity","last-modified":"Tue, 22 Jul 2025 13:15:20 GMT"},"url":"https://jsr.io/@std/http/1.0.20/_negotiation/common.ts","time":1762267730}

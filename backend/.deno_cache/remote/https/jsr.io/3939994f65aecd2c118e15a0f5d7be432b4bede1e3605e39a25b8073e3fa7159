@@ -1,0 +1,27 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import type { ParsedPath } from "../types.ts";
+
+export function _format(
+  sep: string,
+  pathObject: Partial<ParsedPath>,
+): string {
+  const dir: string | undefined = pathObject.dir || pathObject.root;
+  const base: string = pathObject.base ||
+    (pathObject.name ?? "") + (pathObject.ext ?? "");
+  if (!dir) return base;
+  if (base === sep) return dir;
+  if (dir === pathObject.root) return dir + base;
+  return dir + sep + base;
+}
+
+export function assertArg(pathObject: Partial<ParsedPath>) {
+  if (pathObject === null || typeof pathObject !== "object") {
+    throw new TypeError(
+      `The "pathObject" argument must be of type Object, received type "${typeof pathObject}"`,
+    );
+  }
+}
+
+// denoCacheMetadata={"headers":{"x-goog-storage-class":"STANDARD","expires":"Wed, 04 Nov 2026 14:00:11 GMT","server":"UploadServer","x-goog-hash":"crc32c=IgSBDA==,md5=JjSOjzE84hUcODU1XGOdgQ==","via":"1.1 google","x-guploader-uploadid":"AOCedOFjf7HBmY1iL2AZuMaeDQesYDPJLnt09UTOjpJm4k5NJXPjWm1t6YskDJBYTEkKM5x3_TEa60c","x-goog-stored-content-encoding":"identity","content-type":"text/typescript","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-status":"hit","accept-ranges":"bytes","x-jsr-cache-id":"FRA","access-control-allow-origin":"*","access-control-expose-headers":"*","date":"Tue, 04 Nov 2025 14:00:11 GMT","x-goog-stored-content-length":"788","x-content-type-options":"nosniff","age":"2918","x-robots-tag":"noindex","content-length":"788","etag":"\"26348e8f313ce2151c3835355c639d81\"","x-goog-generation":"1755088699371243","cache-control":"public, max-age=31536000, immutable","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","cross-origin-resource-policy":"cross-origin","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-metageneration":"1"},"url":"https://jsr.io/@std/path/1.1.2/_common/format.ts","time":1762267730}

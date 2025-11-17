@@ -1,0 +1,38 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+/** With a provided attribute pattern, return a RegExp which will match and
+ * capture in the first group the value of the attribute from a header value. */
+export function toParamRegExp(
+  attributePattern: string,
+  flags?: string,
+): RegExp {
+  // deno-fmt-ignore
+  return new RegExp(
+    `(?:^|;)\\s*${attributePattern}\\s*=\\s*` +
+    `(` +
+      `[^";\\s][^;\\s]*` +
+    `|` +
+      `"(?:[^"\\\\]|\\\\"?)+"?` +
+    `)`,
+    flags
+  );
+}
+
+/** Unquotes attribute values that might be pass as part of a header. */
+export function unquote(value: string): string {
+  if (value.startsWith(`"`)) {
+    const parts = value.slice(1).split(`\\"`);
+    for (let i = 0; i < parts.length; ++i) {
+      const quoteIndex = parts[i].indexOf(`"`);
+      if (quoteIndex !== -1) {
+        parts[i] = parts[i].slice(0, quoteIndex);
+        parts.length = i + 1; // Truncates and stops the loop
+      }
+      parts[i] = parts[i].replace(/\\(.)/g, "$1");
+    }
+    value = parts.join(`"`);
+  }
+  return value;
+}
+
+// denoCacheMetadata={"headers":{"etag":"\"1a91e4bede0724afcba2af9b7b5495ce\"","x-content-type-options":"nosniff","access-control-expose-headers":"*","x-goog-storage-class":"STANDARD","content-length":"1071","content-type":"text/typescript","via":"1.1 google","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-status":"hit","date":"Tue, 04 Nov 2025 14:31:18 GMT","x-guploader-uploadid":"AOCedOFlLCqSZc77VuxwOqY0Lc_InHEKgeTiTE84nQTTLas6FMpR3TajBoaiDL3I09N7OiBS","cross-origin-resource-policy":"cross-origin","server":"UploadServer","x-goog-generation":"1746009075967408","access-control-allow-origin":"*","last-modified":"Wed, 30 Apr 2025 10:31:16 GMT","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","age":"1051","expires":"Wed, 04 Nov 2026 14:31:18 GMT","x-goog-stored-content-length":"1071","x-goog-hash":"crc32c=+lyTaQ==,md5=GpHkvt4HJK/Loq+be1SVzg==","x-goog-metageneration":"1","accept-ranges":"bytes","x-robots-tag":"noindex","x-jsr-cache-id":"FRA","x-goog-stored-content-encoding":"identity","cache-control":"public, max-age=31536000, immutable"},"url":"https://jsr.io/@oak/commons/1.0.1/header_utils.ts","time":1762267730}

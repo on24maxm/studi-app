@@ -1,0 +1,48 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { assertPath } from "../_common/assert_path.ts";
+import { fromFileUrl } from "./from_file_url.ts";
+import { normalize } from "./normalize.ts";
+
+/**
+ * Join all given a sequence of `paths`,then normalizes the resulting path.
+ *
+ * @example Usage
+ * ```ts
+ * import { join } from "@std/path/posix/join";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(join("/foo", "bar", "baz/asdf", "quux", ".."), "/foo/bar/baz/asdf");
+ * assertEquals(join(new URL("file:///foo"), "bar", "baz/asdf", "quux", ".."), "/foo/bar/baz/asdf");
+ * ```
+ *
+ * @example Working with URLs
+ * ```ts
+ * import { join } from "@std/path/posix/join";
+ * import { assertEquals } from "@std/assert";
+ *
+ * const url = new URL("https://deno.land");
+ * url.pathname = join("std", "path", "mod.ts");
+ * assertEquals(url.href, "https://deno.land/std/path/mod.ts");
+ *
+ * url.pathname = join("//std", "path/", "/mod.ts");
+ * assertEquals(url.href, "https://deno.land/std/path/mod.ts");
+ * ```
+ *
+ * @param path The path to join. This can be string or file URL.
+ * @param paths The paths to join.
+ * @returns The joined path.
+ */
+export function join(path?: URL | string, ...paths: string[]): string {
+  if (path === undefined) return ".";
+  if (path instanceof URL) {
+    path = fromFileUrl(path);
+  }
+  paths = path ? [path, ...paths] : paths;
+  paths.forEach((path) => assertPath(path));
+  const joined = paths.filter((path) => path.length > 0).join("/");
+  return joined === "" ? "." : normalize(joined);
+}
+
+// denoCacheMetadata={"headers":{"access-control-expose-headers":"*","via":"1.1 google","x-guploader-uploadid":"AOCedOFJg28fhwUpTDaguC03r3tTL7SL_skC8Bf7yGOXBoc1TJW6aiyrncxruDLMHkF6PIQthsBaiDc","x-goog-stored-content-length":"1587","server":"UploadServer","x-goog-generation":"1755088699516388","x-goog-metageneration":"1","cache-control":"public, max-age=31536000, immutable","x-goog-hash":"crc32c=NeZMAQ==,md5=f2h3sl8anOVp4MP/vRfw9g==","accept-ranges":"bytes","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-storage-class":"STANDARD","x-jsr-cache-id":"FRA","x-jsr-cache-status":"hit","x-robots-tag":"noindex","date":"Tue, 04 Nov 2025 14:06:06 GMT","cross-origin-resource-policy":"cross-origin","content-type":"text/typescript","access-control-allow-origin":"*","x-content-type-options":"nosniff","age":"2563","expires":"Wed, 04 Nov 2026 14:06:06 GMT","etag":"\"7f6877b25f1a9ce569e0c3ffbd17f0f6\"","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-length":"1587","x-goog-stored-content-encoding":"identity"},"url":"https://jsr.io/@std/path/1.1.2/posix/join.ts","time":1762267730}

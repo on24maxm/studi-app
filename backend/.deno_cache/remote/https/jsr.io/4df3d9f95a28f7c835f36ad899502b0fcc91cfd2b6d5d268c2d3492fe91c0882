@@ -1,0 +1,13 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+
+/**
+ * Proxy type of {@code Uint8Array<ArrayBuffer} or {@code Uint8Array} in TypeScript 5.7 or below respectively.
+ *
+ * This type is internal utility type and should not be used directly.
+ *
+ * @internal @private
+ */
+
+export type Uint8Array_ = ReturnType<Uint8Array["slice"]>;
+
+// denoCacheMetadata={"headers":{"content-type":"text/typescript","x-robots-tag":"noindex","cache-control":"public, max-age=31536000, immutable","x-jsr-cache-id":"FRA","content-length":"333","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","age":"964","x-guploader-uploadid":"AOCedOEBFGy3Z9JA5-onnIj57BKjA99XAkaYsRg-cTwRh0Iclo2T7YCE8CQFmndeR71gEDNP","x-goog-stored-content-length":"333","x-goog-metageneration":"1","via":"1.1 google","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","access-control-allow-origin":"*","cross-origin-resource-policy":"cross-origin","last-modified":"Thu, 24 Apr 2025 06:23:20 GMT","x-goog-stored-content-encoding":"identity","access-control-expose-headers":"*","accept-ranges":"bytes","expires":"Wed, 04 Nov 2026 14:32:46 GMT","x-goog-storage-class":"STANDARD","etag":"\"82430e6b74ddf8ae839923afbd532e9f\"","x-jsr-cache-status":"hit","x-goog-generation":"1745475800011744","date":"Tue, 04 Nov 2025 14:32:46 GMT","x-goog-hash":"crc32c=UJJT4w==,md5=gkMOa3Td+K6DmSOvvVMunw==","server":"UploadServer"},"url":"https://jsr.io/@std/encoding/1.0.10/_types.ts","time":1762267730}

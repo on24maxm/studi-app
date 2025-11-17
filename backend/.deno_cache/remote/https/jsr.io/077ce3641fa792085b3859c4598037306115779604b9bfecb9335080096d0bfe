@@ -1,0 +1,46 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import type { ParsedPath } from "./types.ts";
+import { parse as posixParse } from "./posix/parse.ts";
+import { parse as windowsParse } from "./windows/parse.ts";
+
+export type { ParsedPath } from "./types.ts";
+
+/**
+ * Return an object containing the parsed components of the path.
+ *
+ * Use {@linkcode https://jsr.io/@std/path/doc/~/format | format()} to reverse
+ * the result.
+ *
+ * @example Usage
+ * ```ts
+ * import { parse } from "@std/path/parse";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   const parsedPathObj = parse("C:\\path\\to\\script.ts");
+ *   assertEquals(parsedPathObj.root, "C:\\");
+ *   assertEquals(parsedPathObj.dir, "C:\\path\\to");
+ *   assertEquals(parsedPathObj.base, "script.ts");
+ *   assertEquals(parsedPathObj.ext, ".ts");
+ *   assertEquals(parsedPathObj.name, "script");
+ * } else {
+ *   const parsedPathObj = parse("/path/to/dir/script.ts");
+ *   parsedPathObj.root; // "/"
+ *   parsedPathObj.dir; // "/path/to/dir"
+ *   parsedPathObj.base; // "script.ts"
+ *   parsedPathObj.ext; // ".ts"
+ *   parsedPathObj.name; // "script"
+ * }
+ * ```
+ *
+ * @param path Path to process
+ * @returns An object with the parsed path components.
+ */
+export function parse(path: string): ParsedPath {
+  return isWindows ? windowsParse(path) : posixParse(path);
+}
+
+// denoCacheMetadata={"headers":{"server":"UploadServer","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","date":"Tue, 04 Nov 2025 14:15:50 GMT","accept-ranges":"bytes","x-guploader-uploadid":"AOCedOFBEF5MTXieg4VhEFyzTlsrpqs8zDNSYG0AyhIDxSE1ADworhuTiNr9DZkIR3WGRvY","x-goog-storage-class":"STANDARD","cross-origin-resource-policy":"cross-origin","expires":"Wed, 04 Nov 2026 14:15:50 GMT","x-robots-tag":"noindex","access-control-allow-origin":"*","x-jsr-cache-id":"FRA","x-content-type-options":"nosniff","content-length":"1471","age":"1979","x-goog-stored-content-length":"1471","cache-control":"public, max-age=31536000, immutable","via":"1.1 google","x-goog-generation":"1755088699477916","etag":"\"3bd9f160f11568b07e627ba945a8c087\"","content-type":"text/typescript","x-goog-hash":"crc32c=/Vkv8Q==,md5=O9nxYPEVaLB+YnupRajAhw==","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-status":"hit","x-goog-metageneration":"1","x-goog-stored-content-encoding":"identity","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","access-control-expose-headers":"*"},"url":"https://jsr.io/@std/path/1.1.2/parse.ts","time":1762267730}

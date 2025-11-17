@@ -1,0 +1,10 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+import { assertPath } from "./assert_path.ts";
+export function assertArgs(from, to) {
+  assertPath(from);
+  assertPath(to);
+  if (from === to) return "";
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vanNyLmlvL0BzdGQvcGF0aC8xLjEuMi9fY29tbW9uL3JlbGF0aXZlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIENvcHlyaWdodCAyMDE4LTIwMjUgdGhlIERlbm8gYXV0aG9ycy4gTUlUIGxpY2Vuc2UuXG4vLyBUaGlzIG1vZHVsZSBpcyBicm93c2VyIGNvbXBhdGlibGUuXG5cbmltcG9ydCB7IGFzc2VydFBhdGggfSBmcm9tIFwiLi9hc3NlcnRfcGF0aC50c1wiO1xuXG5leHBvcnQgZnVuY3Rpb24gYXNzZXJ0QXJncyhmcm9tOiBzdHJpbmcsIHRvOiBzdHJpbmcpIHtcbiAgYXNzZXJ0UGF0aChmcm9tKTtcbiAgYXNzZXJ0UGF0aCh0byk7XG4gIGlmIChmcm9tID09PSB0bykgcmV0dXJuIFwiXCI7XG59XG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEscURBQXFEO0FBQ3JELHFDQUFxQztBQUVyQyxTQUFTLFVBQVUsUUFBUSxtQkFBbUI7QUFFOUMsT0FBTyxTQUFTLFdBQVcsSUFBWSxFQUFFLEVBQVU7RUFDakQsV0FBVztFQUNYLFdBQVc7RUFDWCxJQUFJLFNBQVMsSUFBSSxPQUFPO0FBQzFCIn0=
+// denoCacheMetadata=14083589599361950300,8943778453082514896

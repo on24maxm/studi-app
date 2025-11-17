@@ -1,0 +1,70 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+/**
+ * A collection of oak specific APIs for management of ETags.
+ *
+ * @module
+ */
+
+import type { State } from "../application.ts";
+import type { Context } from "../context.ts";
+import { eTag, type ETagOptions } from "../deps.ts";
+import type { Middleware } from "../middleware.ts";
+import { BODY_TYPES } from "../utils/consts.ts";
+import { isAsyncIterable, isFsFile } from "../utils/type_guards.ts";
+
+/** For a given Context, try to determine the response body entity that an ETag
+ * can be calculated from. */
+// deno-lint-ignore no-explicit-any
+export function getEntity<S extends State = Record<string, any>>(
+  context: Context<S>,
+): Promise<string | Uint8Array | Deno.FileInfo | undefined> {
+  const { body } = context.response;
+  if (isFsFile(body)) {
+    return body.stat();
+  }
+  if (body instanceof Uint8Array) {
+    return Promise.resolve(body);
+  }
+  if (BODY_TYPES.includes(typeof body)) {
+    return Promise.resolve(String(body));
+  }
+  if (isAsyncIterable(body)) {
+    return Promise.resolve(undefined);
+  }
+  if (typeof body === "object" && body !== null) {
+    try {
+      const bodyText = JSON.stringify(body);
+      return Promise.resolve(bodyText);
+    } catch {
+      // We don't really care about errors here
+    }
+  }
+  return Promise.resolve(undefined);
+}
+
+/**
+ * Create middleware that will attempt to decode the response.body into
+ * something that can be used to generate an `ETag` and add the `ETag` header to
+ * the response.
+ */
+// deno-lint-ignore no-explicit-any
+export function factory<S extends State = Record<string, any>>(
+  options?: ETagOptions,
+): Middleware<S> {
+  return async function etag(context: Context<S>, next) {
+    await next();
+    if (!context.response.headers.has("ETag")) {
+      const entity = await getEntity(context);
+      if (entity) {
+        // @ts-ignore the overloads aren't quite right in the upstream library
+        const etag = await eTag(entity, options);
+        if (etag) {
+          context.response.headers.set("ETag", etag);
+        }
+      }
+    }
+  };
+}
+
+// denoCacheMetadata={"headers":{"x-cache":"Hit from cloudfront","x-content-type-options":"nosniff","content-length":"2106","referrer-policy":"strict-origin-when-cross-origin","via":"http/2 edgeproxy-h","content-type":"application/typescript; charset=utf-8","x-amz-version-id":"nFiaChuFLdCfeoO6_a_L11LpRdVeVg0I","server":"deno/gcp-europe-west3","server-timing":"fetchSource;dur=10","x-amz-cf-id":"TH9a98gWacqn1LSOuoqd8FwpdvINsgS9D5tWzViVpDLhrd4mqXOYuQ==","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","cross-origin-embedder-policy":"same-origin","cross-origin-opener-policy":"same-origin","access-control-allow-origin":"*","etag":"\"cee1f1062c79e91a18bbc97158a430ac\"","vary":"Accept-Encoding, Origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","accept-ranges":"bytes","age":"7143826","x-frame-options":"DENY","cross-origin-resource-policy":"same-origin","cache-control":"public, max-age=31536000, immutable","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","date":"Wed, 13 Aug 2025 22:25:03 GMT","x-amz-cf-pop":"FRA56-P5","x-amz-replication-status":"COMPLETED","x-amz-server-side-encryption":"AES256"},"url":"https://deno.land/x/oak@v17.1.6/middleware/etag.ts","time":1762267729}

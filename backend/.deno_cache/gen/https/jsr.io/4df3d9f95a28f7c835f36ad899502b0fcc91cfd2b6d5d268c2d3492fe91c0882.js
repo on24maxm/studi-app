@@ -1,0 +1,10 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+/**
+ * Proxy type of {@code Uint8Array<ArrayBuffer} or {@code Uint8Array} in TypeScript 5.7 or below respectively.
+ *
+ * This type is internal utility type and should not be used directly.
+ *
+ * @internal @private
+ */ 
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vanNyLmlvL0BzdGQvZW5jb2RpbmcvMS4wLjEwL190eXBlcy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBDb3B5cmlnaHQgMjAxOC0yMDI1IHRoZSBEZW5vIGF1dGhvcnMuIE1JVCBsaWNlbnNlLlxuXG4vKipcbiAqIFByb3h5IHR5cGUgb2Yge0Bjb2RlIFVpbnQ4QXJyYXk8QXJyYXlCdWZmZXJ9IG9yIHtAY29kZSBVaW50OEFycmF5fSBpbiBUeXBlU2NyaXB0IDUuNyBvciBiZWxvdyByZXNwZWN0aXZlbHkuXG4gKlxuICogVGhpcyB0eXBlIGlzIGludGVybmFsIHV0aWxpdHkgdHlwZSBhbmQgc2hvdWxkIG5vdCBiZSB1c2VkIGRpcmVjdGx5LlxuICpcbiAqIEBpbnRlcm5hbCBAcHJpdmF0ZVxuICovXG5cbmV4cG9ydCB0eXBlIFVpbnQ4QXJyYXlfID0gUmV0dXJuVHlwZTxVaW50OEFycmF5W1wic2xpY2VcIl0+O1xuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLHFEQUFxRDtBQUVyRDs7Ozs7O0NBTUMsR0FFRCJ9
+// denoCacheMetadata=5292064327565706427,1295340017164812819

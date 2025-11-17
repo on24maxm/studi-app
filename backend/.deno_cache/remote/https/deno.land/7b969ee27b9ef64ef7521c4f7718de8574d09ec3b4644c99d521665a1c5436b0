@@ -1,0 +1,92 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+import { BODY_TYPES } from "./consts.ts";
+
+const encoder = new TextEncoder();
+
+/**
+ * Create a `ReadableStream<Uint8Array>` from an `AsyncIterable`.
+ */
+export function readableStreamFromAsyncIterable(
+  source: AsyncIterable<unknown>,
+): ReadableStream<Uint8Array> {
+  return new ReadableStream({
+    async start(controller) {
+      for await (const chunk of source) {
+        if (BODY_TYPES.includes(typeof chunk)) {
+          controller.enqueue(encoder.encode(String(chunk)));
+        } else if (chunk instanceof Uint8Array) {
+          controller.enqueue(chunk);
+        } else if (ArrayBuffer.isView(chunk)) {
+          controller.enqueue(new Uint8Array(chunk.buffer));
+        } else if (chunk instanceof ArrayBuffer) {
+          controller.enqueue(new Uint8Array(chunk));
+        } else {
+          try {
+            controller.enqueue(encoder.encode(JSON.stringify(chunk)));
+          } catch {
+            // we just swallow errors here
+          }
+        }
+      }
+      controller.close();
+    },
+  });
+}
+
+/** A utility class that transforms "any" chunk into an `Uint8Array`. */
+export class Uint8ArrayTransformStream
+  extends TransformStream<unknown, Uint8Array> {
+  constructor() {
+    const init = {
+      async transform(
+        chunk: unknown,
+        controller: TransformStreamDefaultController<Uint8Array>,
+      ) {
+        chunk = await chunk;
+        switch (typeof chunk) {
+          case "object":
+            if (chunk === null) {
+              controller.terminate();
+            } else if (ArrayBuffer.isView(chunk)) {
+              controller.enqueue(
+                new Uint8Array(
+                  chunk.buffer,
+                  chunk.byteOffset,
+                  chunk.byteLength,
+                ),
+              );
+            } else if (
+              Array.isArray(chunk) &&
+              chunk.every((value) => typeof value === "number")
+            ) {
+              controller.enqueue(new Uint8Array(chunk));
+            } else if (
+              typeof chunk.valueOf === "function" && chunk.valueOf() !== chunk
+            ) {
+              this.transform(chunk.valueOf(), controller);
+            } else if ("toJSON" in chunk) {
+              this.transform(JSON.stringify(chunk), controller);
+            }
+            break;
+          case "symbol":
+            controller.error(
+              new TypeError("Cannot transform a symbol to a Uint8Array"),
+            );
+            break;
+          case "undefined":
+            controller.error(
+              new TypeError("Cannot transform undefined to a Uint8Array"),
+            );
+            break;
+          default:
+            controller.enqueue(this.encoder.encode(String(chunk)));
+        }
+      },
+      encoder,
+    };
+    super(init);
+  }
+}
+
+// denoCacheMetadata={"headers":{"x-cache":"Hit from cloudfront","server-timing":"fetchSource;dur=14","x-amz-version-id":"dZbqnVa76aaxrMYkUnyU0xj9HEutiAU.","x-frame-options":"DENY","age":"7573204","cache-control":"public, max-age=31536000, immutable","content-type":"application/typescript; charset=utf-8","strict-transport-security":"max-age=63072000; includeSubDomains; preload","via":"http/2 edgeproxy-h","x-amz-cf-id":"rea27hCwhj_W8B4C5v8HUP9Ko2M_uAWQLqdukwi-9ndHQ3TYSqIRfA==","cross-origin-embedder-policy":"same-origin","date":"Fri, 08 Aug 2025 23:08:46 GMT","vary":"Accept-Encoding, Origin","content-length":"2830","cross-origin-resource-policy":"same-origin","referrer-policy":"strict-origin-when-cross-origin","access-control-allow-origin":"*","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","x-amz-replication-status":"PENDING","x-amz-cf-pop":"FRA56-P5","x-amz-server-side-encryption":"AES256","server":"deno/gcp-europe-west3","etag":"\"a98f7a9c39ce6951428bcf518250d54a\"","x-content-type-options":"nosniff","cross-origin-opener-policy":"same-origin","accept-ranges":"bytes"},"url":"https://deno.land/x/oak@v17.1.6/utils/streams.ts","time":1762267729}

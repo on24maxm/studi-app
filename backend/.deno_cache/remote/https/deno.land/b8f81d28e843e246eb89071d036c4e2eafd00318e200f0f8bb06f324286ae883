@@ -1,0 +1,162 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+/**
+ * A middleware framework for handling HTTP with [Deno CLI](https://deno.land),
+ * [Deno Deploy](https://deno.com/deploy),
+ * [Cloudflare Workers](https://workers.cloudflare.com/),
+ * [Node.js](https://nodejs.org/), and [Bun](https://bun.sh/).
+ *
+ * oak is inspired by [koa](https://koajs.com/).
+ *
+ * ## Example server
+ *
+ * A minimal router server which responds with content on `/`.
+ *
+ * ### Deno CLI and Deno Deploy
+ *
+ * ```ts
+ * import { Application } from "jsr:@oak/oak/application";
+ * import { Router } from "jsr:@oak/oak/router";
+ *
+ * const router = new Router();
+ * router.get("/", (ctx) => {
+ *   ctx.response.body = `<!DOCTYPE html>
+ *     <html>
+ *       <head><title>Hello oak!</title><head>
+ *       <body>
+ *         <h1>Hello oak!</h1>
+ *       </body>
+ *     </html>
+ *   `;
+ * });
+ *
+ * const app = new Application();
+ * app.use(router.routes());
+ * app.use(router.allowedMethods());
+ *
+ * app.listen({ port: 8080 });
+ * ```
+ *
+ * ### Node.js and Bun
+ *
+ * You will have to install the package and then:
+ *
+ * ```ts
+ * import { Application } from "@oak/oak/application";
+ * import { Router } from "@oak/oak/router";
+ *
+ * const router = new Router();
+ * router.get("/", (ctx) => {
+ *   ctx.response.body = `<!DOCTYPE html>
+ *     <html>
+ *       <head><title>Hello oak!</title><head>
+ *       <body>
+ *         <h1>Hello oak!</h1>
+ *       </body>
+ *     </html>
+ *   `;
+ * });
+ *
+ * const app = new Application();
+ * app.use(router.routes());
+ * app.use(router.allowedMethods());
+ *
+ * app.listen({ port: 8080 });
+ * ```
+ *
+ * ### Cloudflare Workers
+ *
+ * You will have to install the package and then:
+ *
+ * ```ts
+ * import { Application } from "@oak/oak/application";
+ * import { Router } from "@oak/oak/router";
+ *
+ * const router = new Router();
+ * router.get("/", (ctx) => {
+ *   ctx.response.body = `<!DOCTYPE html>
+ *     <html>
+ *       <head><title>Hello oak!</title><head>
+ *       <body>
+ *         <h1>Hello oak!</h1>
+ *       </body>
+ *     </html>
+ *   `;
+ * });
+ *
+ * const app = new Application();
+ * app.use(router.routes());
+ * app.use(router.allowedMethods());
+ *
+ * export default { fetch: app.fetch };
+ * ```
+ *
+ * @module
+ */
+
+export {
+  Application,
+  type ApplicationOptions,
+  type ListenOptions,
+  type ListenOptionsBase,
+  type ListenOptionsTls,
+  type State,
+} from "./application.ts";
+export type { BodyType } from "./body.ts";
+export { Context, type ContextSendOptions } from "./context.ts";
+export { Server as HttpServerNative } from "./http_server_native.ts";
+export { type NativeRequest } from "./http_server_native_request.ts";
+export * as etag from "./middleware/etag.ts";
+export { proxy, type ProxyOptions } from "./middleware/proxy.ts";
+export {
+  route,
+  RouteContext,
+  serve,
+  ServeContext,
+} from "./middleware/serve.ts";
+export {
+  compose as composeMiddleware,
+  type Middleware,
+  type MiddlewareObject,
+  type MiddlewareOrMiddlewareObject,
+  type Next,
+} from "./middleware.ts";
+export { Request } from "./request.ts";
+export { REDIRECT_BACK, Response } from "./response.ts";
+export {
+  type Route,
+  type RouteParams,
+  Router,
+  type RouterAllowedMethodsOptions,
+  type RouterContext,
+  type RouterMiddleware,
+  type RouterOptions,
+  type RouterParamMiddleware,
+} from "./router.ts";
+export { send, type SendOptions } from "./send.ts";
+/** Utilities for making testing oak servers easier. */
+export * as testing from "./testing.ts";
+export { type ServerConstructor } from "./types.ts";
+
+// Re-exported from `std/http`
+export {
+  createHttpError,
+  errors as httpErrors,
+  type ErrorStatus,
+  HttpError,
+  type HTTPMethods,
+  isErrorStatus,
+  isHttpError,
+  isRedirectStatus,
+  type RedirectStatus,
+  SecureCookieMap as Cookies,
+  type SecureCookieMapGetOptions as CookiesGetOptions,
+  type SecureCookieMapSetDeleteOptions as CookiesSetDeleteOptions,
+  ServerSentEvent,
+  type ServerSentEventInit,
+  type ServerSentEventTarget,
+  Status,
+  STATUS_TEXT,
+} from "./deps.ts";
+
+// denoCacheMetadata={"headers":{"server-timing":"fetchSource;dur=4","vary":"Accept-Encoding, Origin","x-amz-server-side-encryption":"AES256","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","x-amz-version-id":"Z5LMTGcZp1OCs0DACHrIzWLDr5woy6ym","content-length":"4023","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-frame-options":"DENY","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-id":"mGOsPTjEM1GaXiX7MkLpxuV146HaxrPgHgetfwXJqY7fdW3qBnZNng==","cross-origin-embedder-policy":"same-origin","server":"deno/gcp-europe-west3","accept-ranges":"bytes","cross-origin-opener-policy":"same-origin","content-type":"application/typescript; charset=utf-8","via":"http/2 edgeproxy-h","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","date":"Fri, 08 Aug 2025 23:08:45 GMT","x-cache":"Hit from cloudfront","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","etag":"\"095624ae86577ef82c4ae0b6edc04a32\"","x-content-type-options":"nosniff","age":"7573204","x-amz-cf-pop":"FRA56-P5","cross-origin-resource-policy":"same-origin","x-amz-replication-status":"PENDING"},"url":"https://deno.land/x/oak@v17.1.6/mod.ts","time":1762267728}

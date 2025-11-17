@@ -1,0 +1,98 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { CHAR_DOT } from "../_common/constants.ts";
+import { assertPath } from "../_common/assert_path.ts";
+import { isPosixPathSeparator } from "./_util.ts";
+import { fromFileUrl } from "./from_file_url.ts";
+
+/**
+ * Return the extension of the `path` with leading period.
+ *
+ * @example Usage
+ * ```ts
+ * import { extname } from "@std/path/posix/extname";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(extname("/home/user/Documents/file.ts"), ".ts");
+ * assertEquals(extname("/home/user/Documents/"), "");
+ * assertEquals(extname("/home/user/Documents/image.png"), ".png");
+ * assertEquals(extname(new URL("file:///home/user/Documents/file.ts")), ".ts");
+ * assertEquals(extname(new URL("file:///home/user/Documents/file.ts?a=b")), ".ts");
+ * assertEquals(extname(new URL("file:///home/user/Documents/file.ts#header")), ".ts");
+ * ```
+ *
+ * @example Working with URLs
+ *
+ * Note: This function doesn't automatically strip hash and query parts from
+ * URLs. If your URL contains a hash or query, remove them before passing the
+ * URL to the function. This can be done by passing the URL to `new URL(url)`,
+ * and setting the `hash` and `search` properties to empty strings.
+ *
+ * ```ts
+ * import { extname } from "@std/path/posix/extname";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(extname("https://deno.land/std/path/mod.ts"), ".ts");
+ * assertEquals(extname("https://deno.land/std/path/mod.ts?a=b"), ".ts?a=b");
+ * assertEquals(extname("https://deno.land/std/path/mod.ts#header"), ".ts#header");
+ * ```
+ *
+ * @param path The path to get the extension from.
+ * @returns The extension (ex. for `file.ts` returns `.ts`).
+ */
+export function extname(path: string | URL): string {
+  if (path instanceof URL) {
+    path = fromFileUrl(path);
+  }
+  assertPath(path);
+
+  let startDot = -1;
+  let startPart = 0;
+  let end = -1;
+  let matchedSlash = true;
+  // Track the state of characters (if any) we see before our first dot and
+  // after any path separator we find
+  let preDotState = 0;
+  for (let i = path.length - 1; i >= 0; --i) {
+    const code = path.charCodeAt(i);
+    if (isPosixPathSeparator(code)) {
+      // If we reached a path separator that was not part of a set of path
+      // separators at the end of the string, stop now
+      if (!matchedSlash) {
+        startPart = i + 1;
+        break;
+      }
+      continue;
+    }
+    if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // extension
+      matchedSlash = false;
+      end = i + 1;
+    }
+    if (code === CHAR_DOT) {
+      // If this is our first dot, mark it as the start of our extension
+      if (startDot === -1) startDot = i;
+      else if (preDotState !== 1) preDotState = 1;
+    } else if (startDot !== -1) {
+      // We saw a non-dot and non-path separator before our dot, so we should
+      // have a good chance at having a non-empty extension
+      preDotState = -1;
+    }
+  }
+
+  if (
+    startDot === -1 ||
+    end === -1 ||
+    // We saw a non-dot character immediately before the dot
+    preDotState === 0 ||
+    // The (right-most) trimmed path component is exactly '..'
+    (preDotState === 1 && startDot === end - 1 && startDot === startPart + 1)
+  ) {
+    return "";
+  }
+  return path.slice(startDot, end);
+}
+
+// denoCacheMetadata={"headers":{"x-goog-generation":"1755088699190653","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-jsr-cache-id":"FRA","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-metageneration":"1","x-jsr-cache-status":"hit","cache-control":"public, max-age=31536000, immutable","cross-origin-resource-policy":"cross-origin","x-goog-stored-content-encoding":"identity","accept-ranges":"bytes","x-goog-stored-content-length":"3379","etag":"\"059fda52f497b3e69bf35cd091c76e7a\"","access-control-allow-origin":"*","content-length":"3379","content-type":"text/typescript","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","server":"UploadServer","via":"1.1 google","x-goog-storage-class":"STANDARD","date":"Tue, 04 Nov 2025 14:00:04 GMT","access-control-expose-headers":"*","x-guploader-uploadid":"AOCedOHbvStR72LPS0ra432JGNVebR1Gx2v_ApQiP3mm44pZOTb64ibLS2xIF_UQmNloikM","x-robots-tag":"noindex","expires":"Wed, 04 Nov 2026 14:00:04 GMT","x-goog-hash":"crc32c=BFvVGw==,md5=BZ/aUvSXs+ab81zQkcdueg==","age":"2925"},"url":"https://jsr.io/@std/path/1.1.2/posix/extname.ts","time":1762267730}

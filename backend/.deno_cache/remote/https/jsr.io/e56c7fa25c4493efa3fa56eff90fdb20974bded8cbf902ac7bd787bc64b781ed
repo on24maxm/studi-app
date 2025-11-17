@@ -1,0 +1,32 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { fromFileUrl as posixFromFileUrl } from "./posix/from_file_url.ts";
+import { fromFileUrl as windowsFromFileUrl } from "./windows/from_file_url.ts";
+
+/**
+ * Converts a file URL to a path string.
+ *
+ * @example Usage
+ * ```ts
+ * import { fromFileUrl } from "@std/path/from-file-url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(fromFileUrl("file:///home/foo"), "\\home\\foo");
+ *   assertEquals(fromFileUrl("file:///C:/Users/foo"), "C:\\Users\\foo");
+ *   assertEquals(fromFileUrl("file://localhost/home/foo"), "\\home\\foo");
+ * } else {
+ *   assertEquals(fromFileUrl("file:///home/foo"), "/home/foo");
+ * }
+ * ```
+ *
+ * @param url The file URL to convert to a path.
+ * @returns The path string.
+ */
+export function fromFileUrl(url: string | URL): string {
+  return isWindows ? windowsFromFileUrl(url) : posixFromFileUrl(url);
+}
+
+// denoCacheMetadata={"headers":{"age":"1979","content-length":"1049","x-goog-hash":"crc32c=ONoC9g==,md5=+vLf2ZDlH8csxb+CtJywOA==","x-goog-metageneration":"1","x-goog-stored-content-encoding":"identity","server":"UploadServer","x-robots-tag":"noindex","access-control-allow-origin":"*","cross-origin-resource-policy":"cross-origin","x-content-type-options":"nosniff","via":"1.1 google","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","content-type":"text/typescript","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","etag":"\"faf2dfd990e51fc72cc5bf82b49cb038\"","x-goog-generation":"1755088699472661","x-jsr-cache-id":"FRA","x-guploader-uploadid":"AOCedOGqwHDUMGck76iEl0F9L8NBEHTIYc0QQh7cXXtIu0Gb92c7EVtAeBYpAxqeDDBUKYbY-moGdho","access-control-expose-headers":"*","accept-ranges":"bytes","x-goog-storage-class":"STANDARD","cache-control":"public, max-age=31536000, immutable","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-status":"hit","date":"Tue, 04 Nov 2025 14:15:50 GMT","expires":"Wed, 04 Nov 2026 14:15:50 GMT","x-goog-stored-content-length":"1049"},"url":"https://jsr.io/@std/path/1.1.2/from_file_url.ts","time":1762267730}

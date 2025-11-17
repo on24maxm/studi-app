@@ -1,0 +1,24 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+/** Memoisation of the feature detection of `Promise.withResolvers` */
+const hasPromiseWithResolvers = "withResolvers" in Promise;
+
+/**
+ * Offloads to the native `Promise.withResolvers` when available.
+ *
+ * Currently Node.js does not support it, while Deno does.
+ */
+export function createPromiseWithResolvers<T>(): PromiseWithResolvers<T> {
+  if (hasPromiseWithResolvers) {
+    return Promise.withResolvers<T>();
+  }
+  let resolve;
+  let reject;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve: resolve!, reject: reject! };
+}
+
+// denoCacheMetadata={"headers":{"x-frame-options":"DENY","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-amz-cf-pop":"FRA56-P5","accept-ranges":"bytes","etag":"\"e34fbf3c86a33b20f5c93cb83bbc9e13\"","x-amz-server-side-encryption":"AES256","date":"Fri, 08 Aug 2025 23:08:46 GMT","x-cache":"Hit from cloudfront","via":"http/2 edgeproxy-h","x-amz-version-id":"ESrXqRwtny.uWiRKg1rfLyhIcqGJwaIV","referrer-policy":"strict-origin-when-cross-origin","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","server":"deno/gcp-europe-west3","x-content-type-options":"nosniff","access-control-allow-origin":"*","server-timing":"fetchSource;dur=4","x-amz-cf-id":"M3rYELsgs6fZvEZ6j-mi0J4tyzcG3X1ooOXX6WQWnxOFsryYJlSYHg==","cache-control":"public, max-age=31536000, immutable","strict-transport-security":"max-age=63072000; includeSubDomains; preload","content-length":"675","x-amz-replication-status":"PENDING","content-type":"application/typescript; charset=utf-8","cross-origin-resource-policy":"same-origin","cross-origin-embedder-policy":"same-origin","age":"7573204","vary":"Accept-Encoding, Origin","cross-origin-opener-policy":"same-origin"},"url":"https://deno.land/x/oak@v17.1.6/utils/create_promise_with_resolvers.ts","time":1762267729}

@@ -1,0 +1,72 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+/**
+ * Contains the constant {@linkcode HTTP_METHODS} and the type
+ * {@linkcode HttpMethod} and the type guard {@linkcode isHttpMethod} for
+ * working with HTTP methods with type safety.
+ *
+ * @example
+ * ```ts
+ * import { isHttpMethod } from "jsr:@oak/commons/method";
+ *
+ * console.log(isMethod("GET")); // true
+ * ```
+ *
+ * @module
+ */
+
+/**
+ * A constant array of common HTTP methods.
+ *
+ * This list is compatible with Node.js `http` module.
+ */
+export const HTTP_METHODS = [
+  "ACL",
+  "BIND",
+  "CHECKOUT",
+  "CONNECT",
+  "COPY",
+  "DELETE",
+  "GET",
+  "HEAD",
+  "LINK",
+  "LOCK",
+  "M-SEARCH",
+  "MERGE",
+  "MKACTIVITY",
+  "MKCALENDAR",
+  "MKCOL",
+  "MOVE",
+  "NOTIFY",
+  "OPTIONS",
+  "PATCH",
+  "POST",
+  "PROPFIND",
+  "PROPPATCH",
+  "PURGE",
+  "PUT",
+  "REBIND",
+  "REPORT",
+  "SEARCH",
+  "SOURCE",
+  "SUBSCRIBE",
+  "TRACE",
+  "UNBIND",
+  "UNLINK",
+  "UNLOCK",
+  "UNSUBSCRIBE",
+] as const;
+
+/**
+ * A type representing string literals of each of the common HTTP method.
+ */
+export type HttpMethod = typeof HTTP_METHODS[number];
+
+/**
+ * A type guard that determines if a value is a valid HTTP method.
+ */
+export function isHttpMethod(value: unknown): value is HttpMethod {
+  return HTTP_METHODS.includes(value as HttpMethod);
+}
+
+// denoCacheMetadata={"headers":{"x-goog-stored-content-encoding":"identity","cache-control":"public, max-age=31536000, immutable","last-modified":"Wed, 30 Apr 2025 10:31:16 GMT","accept-ranges":"bytes","via":"1.1 google","etag":"\"ecb1cc68a4c2bcc73ab39c89514ee38f\"","x-jsr-cache-id":"FRA","date":"Tue, 04 Nov 2025 14:31:18 GMT","age":"1051","x-robots-tag":"noindex","content-length":"1311","x-jsr-cache-status":"hit","access-control-allow-origin":"*","expires":"Wed, 04 Nov 2026 14:31:18 GMT","access-control-expose-headers":"*","x-goog-storage-class":"STANDARD","cross-origin-resource-policy":"cross-origin","server":"UploadServer","content-type":"text/typescript","x-guploader-uploadid":"AOCedOFDg_ItvwJ_9WHDEJsLZS0cl3kbLY4_4s30ObQBk9LqbZbMHqhYWKkQ0PAcTN_OnBB2","x-goog-metageneration":"1","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-stored-content-length":"1311","x-goog-generation":"1746009075996275","x-goog-hash":"crc32c=AE6ICA==,md5=7LHMaKTCvMc6s5yJUU7jjw=="},"url":"https://jsr.io/@oak/commons/1.0.1/method.ts","time":1762267729}

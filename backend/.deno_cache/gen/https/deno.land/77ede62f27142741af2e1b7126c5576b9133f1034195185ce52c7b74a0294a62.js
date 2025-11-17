@@ -1,0 +1,57 @@
+/*!
+ * Adapted directly from https://github.com/pillarjs/resolve-path
+ * which is licensed as follows:
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
+ * Copyright (c) 2015-2018 Douglas Christopher Wilson <doug@somethingdoug.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * 'Software'), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */ import { createHttpError, isAbsolute, join, normalize, SEPARATOR } from "../deps.ts";
+const UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
+export function resolvePath(rootPath, relativePath) {
+  let path = relativePath;
+  let root = rootPath;
+  // root is optional, similar to root.resolve
+  if (relativePath === undefined) {
+    path = rootPath;
+    root = ".";
+  }
+  if (path == null) {
+    throw new TypeError("Argument relativePath is required.");
+  }
+  // containing NULL bytes is malicious
+  if (path.includes("\0")) {
+    throw createHttpError(400, "Malicious Path");
+  }
+  // path should never be absolute
+  if (isAbsolute(path)) {
+    throw createHttpError(400, "Malicious Path");
+  }
+  // path outside root
+  if (UP_PATH_REGEXP.test(normalize(`.${SEPARATOR}${path}`))) {
+    throw createHttpError(403);
+  }
+  // join the relative path
+  return normalize(join(root, path));
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vZGVuby5sYW5kL3gvb2FrQHYxNy4xLjYvdXRpbHMvcmVzb2x2ZV9wYXRoLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qIVxuICogQWRhcHRlZCBkaXJlY3RseSBmcm9tIGh0dHBzOi8vZ2l0aHViLmNvbS9waWxsYXJqcy9yZXNvbHZlLXBhdGhcbiAqIHdoaWNoIGlzIGxpY2Vuc2VkIGFzIGZvbGxvd3M6XG4gKlxuICogVGhlIE1JVCBMaWNlbnNlIChNSVQpXG4gKlxuICogQ29weXJpZ2h0IChjKSAyMDE0IEpvbmF0aGFuIE9uZyA8bWVAam9uZ2xlYmVycnkuY29tPlxuICogQ29weXJpZ2h0IChjKSAyMDE1LTIwMTggRG91Z2xhcyBDaHJpc3RvcGhlciBXaWxzb24gPGRvdWdAc29tZXRoaW5nZG91Zy5jb20+XG4gKlxuICogUGVybWlzc2lvbiBpcyBoZXJlYnkgZ3JhbnRlZCwgZnJlZSBvZiBjaGFyZ2UsIHRvIGFueSBwZXJzb24gb2J0YWluaW5nXG4gKiBhIGNvcHkgb2YgdGhpcyBzb2Z0d2FyZSBhbmQgYXNzb2NpYXRlZCBkb2N1bWVudGF0aW9uIGZpbGVzICh0aGVcbiAqICdTb2Z0d2FyZScpLCB0byBkZWFsIGluIHRoZSBTb2Z0d2FyZSB3aXRob3V0IHJlc3RyaWN0aW9uLCBpbmNsdWRpbmdcbiAqIHdpdGhvdXQgbGltaXRhdGlvbiB0aGUgcmlnaHRzIHRvIHVzZSwgY29weSwgbW9kaWZ5LCBtZXJnZSwgcHVibGlzaCxcbiAqIGRpc3RyaWJ1dGUsIHN1YmxpY2Vuc2UsIGFuZC9vciBzZWxsIGNvcGllcyBvZiB0aGUgU29mdHdhcmUsIGFuZCB0b1xuICogcGVybWl0IHBlcnNvbnMgdG8gd2hvbSB0aGUgU29mdHdhcmUgaXMgZnVybmlzaGVkIHRvIGRvIHNvLCBzdWJqZWN0IHRvXG4gKiB0aGUgZm9sbG93aW5nIGNvbmRpdGlvbnM6XG4gKlxuICogVGhlIGFib3ZlIGNvcHlyaWdodCBub3RpY2UgYW5kIHRoaXMgcGVybWlzc2lvbiBub3RpY2Ugc2hhbGwgYmVcbiAqIGluY2x1ZGVkIGluIGFsbCBjb3BpZXMgb3Igc3Vic3RhbnRpYWwgcG9ydGlvbnMgb2YgdGhlIFNvZnR3YXJlLlxuICpcbiAqIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCAnQVMgSVMnLCBXSVRIT1VUIFdBUlJBTlRZIE9GIEFOWSBLSU5ELFxuICogRVhQUkVTUyBPUiBJTVBMSUVELCBJTkNMVURJTkcgQlVUIE5PVCBMSU1JVEVEIFRPIFRIRSBXQVJSQU5USUVTIE9GXG4gKiBNRVJDSEFOVEFCSUxJVFksIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFIEFORCBOT05JTkZSSU5HRU1FTlQuXG4gKiBJTiBOTyBFVkVOVCBTSEFMTCBUSEUgQVVUSE9SUyBPUiBDT1BZUklHSFQgSE9MREVSUyBCRSBMSUFCTEUgRk9SIEFOWVxuICogQ0xBSU0sIERBTUFHRVMgT1IgT1RIRVIgTElBQklMSVRZLCBXSEVUSEVSIElOIEFOIEFDVElPTiBPRiBDT05UUkFDVCxcbiAqIFRPUlQgT1IgT1RIRVJXSVNFLCBBUklTSU5HIEZST00sIE9VVCBPRiBPUiBJTiBDT05ORUNUSU9OIFdJVEggVEhFXG4gKiBTT0ZUV0FSRSBPUiBUSEUgVVNFIE9SIE9USEVSIERFQUxJTkdTIElOIFRIRSBTT0ZUV0FSRS5cbiAqL1xuXG5pbXBvcnQge1xuICBjcmVhdGVIdHRwRXJyb3IsXG4gIGlzQWJzb2x1dGUsXG4gIGpvaW4sXG4gIG5vcm1hbGl6ZSxcbiAgU0VQQVJBVE9SLFxufSBmcm9tIFwiLi4vZGVwcy50c1wiO1xuXG5jb25zdCBVUF9QQVRIX1JFR0VYUCA9IC8oPzpefFtcXFxcL10pXFwuXFwuKD86W1xcXFwvXXwkKS87XG5cbmV4cG9ydCBmdW5jdGlvbiByZXNvbHZlUGF0aChyZWxhdGl2ZVBhdGg6IHN0cmluZyk6IHN0cmluZztcbmV4cG9ydCBmdW5jdGlvbiByZXNvbHZlUGF0aChyb290UGF0aDogc3RyaW5nLCByZWxhdGl2ZVBhdGg6IHN0cmluZyk6IHN0cmluZztcbmV4cG9ydCBmdW5jdGlvbiByZXNvbHZlUGF0aChyb290UGF0aDogc3RyaW5nLCByZWxhdGl2ZVBhdGg/OiBzdHJpbmcpOiBzdHJpbmcge1xuICBsZXQgcGF0aCA9IHJlbGF0aXZlUGF0aDtcbiAgbGV0IHJvb3QgPSByb290UGF0aDtcblxuICAvLyByb290IGlzIG9wdGlvbmFsLCBzaW1pbGFyIHRvIHJvb3QucmVzb2x2ZVxuICBpZiAocmVsYXRpdmVQYXRoID09PSB1bmRlZmluZWQpIHtcbiAgICBwYXRoID0gcm9vdFBhdGg7XG4gICAgcm9vdCA9IFwiLlwiO1xuICB9XG5cbiAgaWYgKHBhdGggPT0gbnVsbCkge1xuICAgIHRocm93IG5ldyBUeXBlRXJyb3IoXCJBcmd1bWVudCByZWxhdGl2ZVBhdGggaXMgcmVxdWlyZWQuXCIpO1xuICB9XG5cbiAgLy8gY29udGFpbmluZyBOVUxMIGJ5dGVzIGlzIG1hbGljaW91c1xuICBpZiAocGF0aC5pbmNsdWRlcyhcIlxcMFwiKSkge1xuICAgIHRocm93IGNyZWF0ZUh0dHBFcnJvcig0MDAsIFwiTWFsaWNpb3VzIFBhdGhcIik7XG4gIH1cblxuICAvLyBwYXRoIHNob3VsZCBuZXZlciBiZSBhYnNvbHV0ZVxuICBpZiAoaXNBYnNvbHV0ZShwYXRoKSkge1xuICAgIHRocm93IGNyZWF0ZUh0dHBFcnJvcig0MDAsIFwiTWFsaWNpb3VzIFBhdGhcIik7XG4gIH1cblxuICAvLyBwYXRoIG91dHNpZGUgcm9vdFxuICBpZiAoVVBfUEFUSF9SRUdFWFAudGVzdChub3JtYWxpemUoYC4ke1NFUEFSQVRPUn0ke3BhdGh9YCkpKSB7XG4gICAgdGhyb3cgY3JlYXRlSHR0cEVycm9yKDQwMyk7XG4gIH1cblxuICAvLyBqb2luIHRoZSByZWxhdGl2ZSBwYXRoXG4gIHJldHVybiBub3JtYWxpemUoam9pbihyb290LCBwYXRoKSk7XG59XG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztDQTJCQyxHQUVELFNBQ0UsZUFBZSxFQUNmLFVBQVUsRUFDVixJQUFJLEVBQ0osU0FBUyxFQUNULFNBQVMsUUFDSixhQUFhO0FBRXBCLE1BQU0saUJBQWlCO0FBSXZCLE9BQU8sU0FBUyxZQUFZLFFBQWdCLEVBQUUsWUFBcUI7RUFDakUsSUFBSSxPQUFPO0VBQ1gsSUFBSSxPQUFPO0VBRVgsNENBQTRDO0VBQzVDLElBQUksaUJBQWlCLFdBQVc7SUFDOUIsT0FBTztJQUNQLE9BQU87RUFDVDtFQUVBLElBQUksUUFBUSxNQUFNO0lBQ2hCLE1BQU0sSUFBSSxVQUFVO0VBQ3RCO0VBRUEscUNBQXFDO0VBQ3JDLElBQUksS0FBSyxRQUFRLENBQUMsT0FBTztJQUN2QixNQUFNLGdCQUFnQixLQUFLO0VBQzdCO0VBRUEsZ0NBQWdDO0VBQ2hDLElBQUksV0FBVyxPQUFPO0lBQ3BCLE1BQU0sZ0JBQWdCLEtBQUs7RUFDN0I7RUFFQSxvQkFBb0I7RUFDcEIsSUFBSSxlQUFlLElBQUksQ0FBQyxVQUFVLENBQUMsQ0FBQyxFQUFFLFlBQVksTUFBTSxJQUFJO0lBQzFELE1BQU0sZ0JBQWdCO0VBQ3hCO0VBRUEseUJBQXlCO0VBQ3pCLE9BQU8sVUFBVSxLQUFLLE1BQU07QUFDOUIifQ==
+// denoCacheMetadata=3250373617783287608,15077840771846723425

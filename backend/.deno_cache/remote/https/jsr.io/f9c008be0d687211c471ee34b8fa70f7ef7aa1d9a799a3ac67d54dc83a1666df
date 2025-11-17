@@ -1,0 +1,33 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { join as posixJoin } from "./posix/join.ts";
+import { join as windowsJoin } from "./windows/join.ts";
+
+/**
+ * Joins a sequence of paths, then normalizes the resulting path.
+ *
+ * @example Usage
+ * ```ts
+ * import { join } from "@std/path/join";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(join("C:\\foo", "bar", "baz\\quux", "garply", ".."), "C:\\foo\\bar\\baz\\quux");
+ *   assertEquals(join(new URL("file:///C:/foo"), "bar", "baz/asdf", "quux", ".."), "C:\\foo\\bar\\baz\\asdf");
+ * } else {
+ *   assertEquals(join("/foo", "bar", "baz/quux", "garply", ".."), "/foo/bar/baz/quux");
+ *   assertEquals(join(new URL("file:///foo"), "bar", "baz/asdf", "quux", ".."), "/foo/bar/baz/asdf");
+ * }
+ * ```
+ *
+ * @param path The path to join. This can be string or file URL.
+ * @param paths Paths to be joined and normalized.
+ * @returns The joined and normalized path.
+ */
+export function join(path: string | URL, ...paths: string[]): string {
+  return isWindows ? windowsJoin(path, ...paths) : posixJoin(path, ...paths);
+}
+
+// denoCacheMetadata={"headers":{"age":"2918","server":"UploadServer","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-storage-class":"STANDARD","content-type":"text/typescript","x-jsr-cache-id":"FRA","access-control-allow-origin":"*","x-goog-generation":"1755088699180959","x-goog-stored-content-length":"1237","x-guploader-uploadid":"AOCedOEt4q0-l1ekEfICX6pg-u_5mb6vW9O-0TBHGJl4BebJAuD3g0anW21p0jvnMQ85ySMv7bv-3cs","date":"Tue, 04 Nov 2025 14:00:11 GMT","via":"1.1 google","x-content-type-options":"nosniff","x-goog-hash":"crc32c=/0Ij1Q==,md5=kKz8MfxKZ001JI+E7vWkNw==","access-control-expose-headers":"*","x-goog-stored-content-encoding":"identity","etag":"\"90acfc31fc4a674d35248f84eef5a437\"","content-length":"1237","x-robots-tag":"noindex","cache-control":"public, max-age=31536000, immutable","expires":"Wed, 04 Nov 2026 14:00:11 GMT","accept-ranges":"bytes","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-metageneration":"1","x-jsr-cache-status":"hit","cross-origin-resource-policy":"cross-origin","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT"},"url":"https://jsr.io/@std/path/1.1.2/join.ts","time":1762267730}

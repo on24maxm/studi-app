@@ -1,0 +1,10 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+/** Body types which will be coerced into strings before being sent. */ export const BODY_TYPES = [
+  "string",
+  "number",
+  "bigint",
+  "boolean",
+  "symbol"
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vZGVuby5sYW5kL3gvb2FrQHYxNy4xLjYvdXRpbHMvY29uc3RzLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIENvcHlyaWdodCAyMDE4LTIwMjUgdGhlIG9hayBhdXRob3JzLiBBbGwgcmlnaHRzIHJlc2VydmVkLiBNSVQgbGljZW5zZS5cblxuLyoqIEJvZHkgdHlwZXMgd2hpY2ggd2lsbCBiZSBjb2VyY2VkIGludG8gc3RyaW5ncyBiZWZvcmUgYmVpbmcgc2VudC4gKi9cbmV4cG9ydCBjb25zdCBCT0RZX1RZUEVTID0gW1wic3RyaW5nXCIsIFwibnVtYmVyXCIsIFwiYmlnaW50XCIsIFwiYm9vbGVhblwiLCBcInN5bWJvbFwiXTtcbiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSx5RUFBeUU7QUFFekUscUVBQXFFLEdBQ3JFLE9BQU8sTUFBTSxhQUFhO0VBQUM7RUFBVTtFQUFVO0VBQVU7RUFBVztDQUFTLENBQUMifQ==
+// denoCacheMetadata=4438250088192214480,12113595157114001324

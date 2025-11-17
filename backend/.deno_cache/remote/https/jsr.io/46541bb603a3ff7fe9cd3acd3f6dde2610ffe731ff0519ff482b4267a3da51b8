@@ -1,0 +1,17 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+/**
+ * The character used to separate entries in the PATH environment variable.
+ */
+export const DELIMITER = ";" as const;
+/**
+ * The character used to separate components of a file path.
+ */
+export const SEPARATOR = "\\" as const;
+/**
+ * A regular expression that matches one or more path separators.
+ */
+export const SEPARATOR_PATTERN = /[\\/]+/;
+
+// denoCacheMetadata={"headers":{"content-length":"442","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","expires":"Wed, 04 Nov 2026 14:00:11 GMT","access-control-expose-headers":"*","x-jsr-cache-status":"hit","x-content-type-options":"nosniff","x-goog-storage-class":"STANDARD","x-goog-generation":"1755088699235218","date":"Tue, 04 Nov 2025 14:00:11 GMT","x-goog-hash":"crc32c=+dy0sA==,md5=LTfAmlNZ9qPiolJq5/pOrQ==","cache-control":"public, max-age=31536000, immutable","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-guploader-uploadid":"AOCedOHCKsT-zx9oWHo8wWb9AJwAAbm1JDanpNgGBqxn1PyvNcxa0uXeQsa0WQUpW_v-5d_H28LqHkU","age":"2918","content-type":"text/typescript","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-id":"FRA","accept-ranges":"bytes","server":"UploadServer","x-goog-metageneration":"1","x-goog-stored-content-encoding":"identity","via":"1.1 google","etag":"\"2d37c09a5359f6a3e2a2526ae7fa4ead\"","x-robots-tag":"noindex","access-control-allow-origin":"*","cross-origin-resource-policy":"cross-origin","x-goog-stored-content-length":"442"},"url":"https://jsr.io/@std/path/1.1.2/windows/constants.ts","time":1762267730}

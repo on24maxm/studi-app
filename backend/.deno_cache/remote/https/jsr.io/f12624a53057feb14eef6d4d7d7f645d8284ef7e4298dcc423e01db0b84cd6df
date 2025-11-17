@@ -1,0 +1,34 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { encodeWhitespace } from "../_common/to_file_url.ts";
+import { isAbsolute } from "./is_absolute.ts";
+
+/**
+ * Converts a path string to a file URL.
+ *
+ * @example Usage
+ * ```ts
+ * import { toFileUrl } from "@std/path/posix/to-file-url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(toFileUrl("/home/foo"), new URL("file:///home/foo"));
+ * assertEquals(toFileUrl("/home/foo bar"), new URL("file:///home/foo%20bar"));
+ * ```
+ *
+ * @param path The path to convert.
+ * @returns The file URL.
+ */
+export function toFileUrl(path: string): URL {
+  if (!isAbsolute(path)) {
+    throw new TypeError(`Path must be absolute: received "${path}"`);
+  }
+
+  const url = new URL("file:///");
+  url.pathname = encodeWhitespace(
+    path.replace(/%/g, "%25").replace(/\\/g, "%5C"),
+  );
+  return url;
+}
+
+// denoCacheMetadata={"headers":{"access-control-allow-origin":"*","access-control-expose-headers":"*","cross-origin-resource-policy":"cross-origin","content-length":"907","x-goog-generation":"1755088699327441","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-stored-content-length":"907","accept-ranges":"bytes","age":"2918","x-jsr-cache-status":"hit","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-storage-class":"STANDARD","x-goog-hash":"crc32c=fqhlqw==,md5=ySM1FX3bAd4c5A7xvN295Q==","server":"UploadServer","expires":"Wed, 04 Nov 2026 14:00:11 GMT","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","cache-control":"public, max-age=31536000, immutable","x-guploader-uploadid":"AOCedOFjYluV3LGmsDxzJVnhgzoUkSMyeuSgBGgMJ6Y3OLdmzQc_XGxDRxkX5XCB3Hkl1O4swTbkUXw","etag":"\"c92335157ddb01de1ce40ef1bcddbde5\"","x-content-type-options":"nosniff","x-goog-stored-content-encoding":"identity","via":"1.1 google","content-type":"text/typescript","x-goog-metageneration":"1","x-jsr-cache-id":"FRA","x-robots-tag":"noindex","date":"Tue, 04 Nov 2025 14:00:11 GMT"},"url":"https://jsr.io/@std/path/1.1.2/posix/to_file_url.ts","time":1762267730}

@@ -31,7 +31,7 @@
             <h1 class="font-sans text-2xl pb-2">{{ deck.name }}</h1>
             <h2 class="font-sans">Karten in diesem Stapel:</h2>
             <ul>
-                <li v-for="card in cards" :key="card.id" class="border-2 border-gray-300 mb-2 rounded-lg" @click="showCardDetailsFunc(card)">
+                <li v-for="card in cards" :key="card.id" @click="showCardDetailsFunc(card)" class="border-2 border-gray-300 mb-2 rounded-lg">
                     <div class="card-front pl-2" >Vorderseite: {{ card.front }}</div>
                     <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" @click="deleteCard(card.id)">Löschen</button>
                 </li>
@@ -55,9 +55,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import apiService from '@/services/apiService';
-import { useAuthStore } from '@/stores/authStore';
-import type { Deck } from '@/models/deck';
+import apiService from '../services/apiService';
+import { useAuthStore } from '../stores/authStore';
+import type { Deck } from '../models/deck';
 import type { Card } from '../models/card';
 
 const router = useRouter();

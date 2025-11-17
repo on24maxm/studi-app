@@ -1,0 +1,39 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { basename as posixBasename } from "./posix/basename.ts";
+import { basename as windowsBasename } from "./windows/basename.ts";
+
+/**
+ * Return the last portion of a path.
+ *
+ * The trailing directory separators are ignored, and optional suffix is
+ * removed.
+ *
+ * @example Usage
+ * ```ts
+ * import { basename } from "@std/path/basename";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(basename("C:\\user\\Documents\\image.png"), "image.png");
+ *   assertEquals(basename(new URL("file:///C:/user/Documents/image.png")), "image.png");
+ * } else {
+ *   assertEquals(basename("/home/user/Documents/image.png"), "image.png");
+ *   assertEquals(basename(new URL("file:///home/user/Documents/image.png")), "image.png");
+ * }
+ * ```
+ *
+ * @param path Path to extract the name from.
+ * @param suffix Suffix to remove from extracted name.
+ *
+ * @returns The basename of the path.
+ */
+export function basename(path: string | URL, suffix = ""): string {
+  return isWindows
+    ? windowsBasename(path, suffix)
+    : posixBasename(path, suffix);
+}
+
+// denoCacheMetadata={"headers":{"server":"UploadServer","x-content-type-options":"nosniff","access-control-allow-origin":"*","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-length":"1251","x-goog-metageneration":"1","x-goog-hash":"crc32c=PLQL1A==,md5=C37dc6TbjbKO4dFimxb8BA==","accept-ranges":"bytes","x-goog-generation":"1755088699517032","expires":"Wed, 04 Nov 2026 14:00:11 GMT","via":"1.1 google","date":"Tue, 04 Nov 2025 14:00:11 GMT","cache-control":"public, max-age=31536000, immutable","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-goog-stored-content-encoding":"identity","etag":"\"0b7edd73a4db8db28ee1d1629b16fc04\"","content-type":"text/typescript","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-stored-content-length":"1251","x-jsr-cache-id":"FRA","x-guploader-uploadid":"AOCedOFHSOdmYGQrYavXDkT1pSyvbkbCB6xMBWuyWpq-y_4DATVGskbeD29BVUbRtTcWjouEXSn0fcE","x-jsr-cache-status":"hit","access-control-expose-headers":"*","cross-origin-resource-policy":"cross-origin","x-goog-storage-class":"STANDARD","age":"2918","x-robots-tag":"noindex"},"url":"https://jsr.io/@std/path/1.1.2/basename.ts","time":1762267730}

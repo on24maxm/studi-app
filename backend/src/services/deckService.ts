@@ -11,15 +11,17 @@ export class DeckService {
         const [result] = await pool.execute(`INSERT INTO decks (name, user_id) VALUES (?, ?)`, [name, userId]);
         const insertResult = result as unknown as ({ insertId: number })
 
-        const resultDeck = await pool.execute(`SELECT * FROM DECKS WHERE ID = ?`, [insertResult.insertId]);
-        return resultDeck[0] as unknown as Deck;
+        const [deckRows] = await pool.execute(`SELECT * FROM decks WHERE ID = ?`, [insertResult.insertId]);
+        const decks = deckRows as unknown as Deck[];
+        return decks[0];
     }
     
     async updateDeck(userId: number, deckId: number, name: string): Promise<Deck> {
-        const [result] = await pool.execute(`UPDATE decks SET name = ? WHERE user_id = ? and id = ?`, [name, userId, deckId]);
-        const affectedRow = await pool.execute(`SELECT * FROM decks WHERE user_id = ? and id = ?`, [userId, deckId]);
+        await pool.execute(`UPDATE decks SET name = ? WHERE user_id = ? and id = ?`, [name, userId, deckId]);
+        const [deckRows] = await pool.execute(`SELECT * FROM decks WHERE user_id = ? and id = ?`, [userId, deckId]);
 
-        return affectedRow[0] as unknown as Deck;
+        const decks = deckRows as unknown as Deck[];
+        return decks[0];
     }
 
     async deleteDeck(userId: number, deckId: number): Promise<boolean> {

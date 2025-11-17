@@ -1,0 +1,13 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+/**
+ * Safely decode a URI component, where if it fails, instead of throwing,
+ * just returns the original string
+ */ export function decodeComponent(text) {
+  try {
+    return decodeURIComponent(text);
+  } catch  {
+    return text;
+  }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vZGVuby5sYW5kL3gvb2FrQHYxNy4xLjYvdXRpbHMvZGVjb2RlX2NvbXBvbmVudC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBDb3B5cmlnaHQgMjAxOC0yMDI1IHRoZSBvYWsgYXV0aG9ycy4gQWxsIHJpZ2h0cyByZXNlcnZlZC4gTUlUIGxpY2Vuc2UuXG5cbi8qKlxuICogU2FmZWx5IGRlY29kZSBhIFVSSSBjb21wb25lbnQsIHdoZXJlIGlmIGl0IGZhaWxzLCBpbnN0ZWFkIG9mIHRocm93aW5nLFxuICoganVzdCByZXR1cm5zIHRoZSBvcmlnaW5hbCBzdHJpbmdcbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGRlY29kZUNvbXBvbmVudCh0ZXh0OiBzdHJpbmcpIHtcbiAgdHJ5IHtcbiAgICByZXR1cm4gZGVjb2RlVVJJQ29tcG9uZW50KHRleHQpO1xuICB9IGNhdGNoIHtcbiAgICByZXR1cm4gdGV4dDtcbiAgfVxufVxuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLHlFQUF5RTtBQUV6RTs7O0NBR0MsR0FDRCxPQUFPLFNBQVMsZ0JBQWdCLElBQVk7RUFDMUMsSUFBSTtJQUNGLE9BQU8sbUJBQW1CO0VBQzVCLEVBQUUsT0FBTTtJQUNOLE9BQU87RUFDVDtBQUNGIn0=
+// denoCacheMetadata=13365384199154021861,10921818872578455475

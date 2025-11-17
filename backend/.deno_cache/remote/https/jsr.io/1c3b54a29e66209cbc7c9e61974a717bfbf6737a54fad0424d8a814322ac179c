@@ -1,0 +1,32 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { isAbsolute as posixIsAbsolute } from "./posix/is_absolute.ts";
+import { isAbsolute as windowsIsAbsolute } from "./windows/is_absolute.ts";
+
+/**
+ * Verifies whether provided path is absolute.
+ *
+ * @example Usage
+ * ```ts
+ * import { isAbsolute } from "@std/path/is-absolute";
+ * import { assert, assertFalse } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assert(isAbsolute("C:\\home\\foo"));
+ *   assertFalse(isAbsolute("home\\foo"));
+ * } else {
+ *   assert(isAbsolute("/home/foo"));
+ *   assertFalse(isAbsolute("home/foo"));
+ * }
+ * ```
+ *
+ * @param path Path to be verified as absolute.
+ * @returns `true` if path is absolute, `false` otherwise
+ */
+export function isAbsolute(path: string): boolean {
+  return isWindows ? windowsIsAbsolute(path) : posixIsAbsolute(path);
+}
+
+// denoCacheMetadata={"headers":{"age":"2918","date":"Tue, 04 Nov 2025 14:00:11 GMT","access-control-allow-origin":"*","access-control-expose-headers":"*","expires":"Wed, 04 Nov 2026 14:00:11 GMT","x-guploader-uploadid":"AOCedOFg4R5A1hCYxzHA8lZpIOpGOdgwFZ6a-wBSOOkdc0sOrXqMpNeJZ34YogbK7bywIeeE6I98FQY","x-jsr-cache-status":"hit","x-jsr-cache-id":"FRA","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-generation":"1755088699252750","x-goog-metageneration":"1","x-goog-hash":"crc32c=r0msjg==,md5=9v1t16VfAch3GTDrdVdY3A==","server":"UploadServer","content-type":"text/typescript","x-content-type-options":"nosniff","accept-ranges":"bytes","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-robots-tag":"noindex","content-length":"957","cross-origin-resource-policy":"cross-origin","via":"1.1 google","etag":"\"f6fd6dd7a55f01c8771930eb755758dc\"","x-goog-stored-content-length":"957","x-goog-stored-content-encoding":"identity","x-goog-storage-class":"STANDARD","cache-control":"public, max-age=31536000, immutable"},"url":"https://jsr.io/@std/path/1.1.2/is_absolute.ts","time":1762267730}

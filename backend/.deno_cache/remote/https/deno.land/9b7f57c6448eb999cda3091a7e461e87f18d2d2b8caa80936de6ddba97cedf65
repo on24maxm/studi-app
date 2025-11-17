@@ -1,0 +1,15 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+/**
+ * Safely decode a URI component, where if it fails, instead of throwing,
+ * just returns the original string
+ */
+export function decodeComponent(text: string) {
+  try {
+    return decodeURIComponent(text);
+  } catch {
+    return text;
+  }
+}
+
+// denoCacheMetadata={"headers":{"x-frame-options":"DENY","referrer-policy":"strict-origin-when-cross-origin","x-amz-version-id":"weVDTYmdl50bzXNUTr3XjguH06Ik6iRI","cross-origin-opener-policy":"same-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","date":"Fri, 08 Aug 2025 23:08:46 GMT","x-amz-cf-pop":"FRA56-P5","content-type":"application/typescript; charset=utf-8","x-amz-server-side-encryption":"AES256","accept-ranges":"bytes","server":"deno/gcp-europe-west3","x-amz-cf-id":"V9TNo1yhiIzA6JCxTA294abHbLvOrmIIwjDc1t0mojA7wRJZz_KSSQ==","age":"7573204","x-content-type-options":"nosniff","x-cache":"Hit from cloudfront","access-control-allow-origin":"*","cross-origin-embedder-policy":"same-origin","cross-origin-resource-policy":"same-origin","etag":"\"f50576ac75b4562141064778b0dd1910\"","via":"http/2 edgeproxy-h","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","vary":"Accept-Encoding, Origin","content-length":"321","cache-control":"public, max-age=31536000, immutable","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","server-timing":"fetchSource;dur=8","x-amz-replication-status":"PENDING"},"url":"https://deno.land/x/oak@v17.1.6/utils/decode_component.ts","time":1762267729}

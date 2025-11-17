@@ -46,9 +46,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import apiService from '@/services/apiService';
-import type { Card } from '@/models/card';
-import { useAuthStore } from '@/stores/authStore';
+import apiService from '../services/apiService';
+import type { Card } from '../models/card';
+import { useAuthStore } from '../stores/authStore';
 
 const authStore = useAuthStore();
 

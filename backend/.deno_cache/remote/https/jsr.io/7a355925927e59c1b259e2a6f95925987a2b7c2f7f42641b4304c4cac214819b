@@ -1,0 +1,147 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+
+export interface DBEntry {
+  source: string;
+  compressible?: boolean;
+  charset?: string;
+  extensions?: string[];
+}
+
+export function consumeToken(v: string): [token: string, rest: string] {
+  const notPos = indexOf(v, isNotTokenChar);
+  if (notPos === -1) {
+    return [v, ""];
+  }
+  if (notPos === 0) {
+    return ["", v];
+  }
+  return [v.slice(0, notPos), v.slice(notPos)];
+}
+
+export function consumeValue(v: string): [value: string, rest: string] {
+  if (!v) {
+    return ["", v];
+  }
+  if (v[0] !== `"`) {
+    return consumeToken(v);
+  }
+  let value = "";
+  for (let i = 1; i < v.length; i++) {
+    const r = v[i];
+    if (r === `"`) {
+      return [value, v.slice(i + 1)];
+    }
+    const next = v[i + 1];
+    if (r === "\\" && typeof next === "string" && isTSpecial(next)) {
+      value += next;
+      i++;
+      continue;
+    }
+    if (r === "\r" || r === "\n") {
+      return ["", v];
+    }
+    value += v[i];
+  }
+  return ["", v];
+}
+
+export function consumeMediaParam(
+  v: string,
+): [key: string, value: string, rest: string] {
+  let rest = v.trimStart();
+  if (!rest.startsWith(";")) {
+    return ["", "", v];
+  }
+  rest = rest.slice(1);
+  rest = rest.trimStart();
+  let param: string;
+  [param, rest] = consumeToken(rest);
+  param = param.toLowerCase();
+  if (!param) {
+    return ["", "", v];
+  }
+  rest = rest.slice(1);
+  rest = rest.trimStart();
+  const [value, rest2] = consumeValue(rest);
+  if (value === "" && rest2 === rest) {
+    return ["", "", v];
+  }
+  rest = rest2;
+  return [param, value, rest];
+}
+
+export function decode2331Encoding(v: string): string | undefined {
+  const sv = v.split(`'`, 3);
+  if (sv.length !== 3) {
+    return undefined;
+  }
+  const [sv0, , sv2] = sv as [string, string, string];
+  const charset = sv0.toLowerCase();
+  if (!charset) {
+    return undefined;
+  }
+  if (charset !== "us-ascii" && charset !== "utf-8") {
+    return undefined;
+  }
+  const encv = decodeURI(sv2);
+  if (!encv) {
+    return undefined;
+  }
+  return encv;
+}
+
+function indexOf<T>(s: Iterable<T>, fn: (s: T) => boolean): number {
+  let i = -1;
+  for (const v of s) {
+    i++;
+    if (fn(v)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+export function isIterator<T>(obj: unknown): obj is Iterable<T> {
+  if (obj === null || obj === undefined) {
+    return false;
+  }
+  // deno-lint-ignore no-explicit-any
+  return typeof (obj as any)[Symbol.iterator] === "function";
+}
+
+export function isToken(s: string): boolean {
+  if (!s) {
+    return false;
+  }
+  return indexOf(s, isNotTokenChar) < 0;
+}
+
+function isNotTokenChar(r: string): boolean {
+  return !isTokenChar(r);
+}
+
+function isTokenChar(r: string): boolean {
+  const code = r.charCodeAt(0);
+  return code > 0x20 && code < 0x7f && !isTSpecial(r);
+}
+
+export function isTSpecial(r: string): boolean {
+  return r[0] ? `()<>@,;:\\"/[]?=`.includes(r[0]) : false;
+}
+
+const CHAR_CODE_SPACE = " ".charCodeAt(0);
+const CHAR_CODE_TILDE = "~".charCodeAt(0);
+
+export function needsEncoding(s: string): boolean {
+  for (const b of s) {
+    const charCode = b.charCodeAt(0);
+    if (
+      (charCode < CHAR_CODE_SPACE || charCode > CHAR_CODE_TILDE) && b !== "\t"
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// denoCacheMetadata={"headers":{"date":"Tue, 04 Nov 2025 14:05:30 GMT","x-content-type-options":"nosniff","x-goog-generation":"1731496171691147","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","last-modified":"Wed, 13 Nov 2024 11:09:31 GMT","access-control-expose-headers":"*","content-length":"3253","expires":"Wed, 04 Nov 2026 14:05:30 GMT","x-goog-storage-class":"STANDARD","x-goog-stored-content-encoding":"identity","x-jsr-cache-status":"hit","access-control-allow-origin":"*","x-goog-stored-content-length":"3253","accept-ranges":"bytes","cache-control":"public, max-age=31536000, immutable","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-id":"FRA","x-robots-tag":"noindex","x-goog-metageneration":"1","cross-origin-resource-policy":"cross-origin","via":"1.1 google","etag":"\"4eafc265a261fbcda5991050aacaa7e5\"","age":"2599","content-type":"text/typescript","x-guploader-uploadid":"AOCedOFbTAUo0w6EElg1cCXSBtYdHVdWuWdBnY4xPMteKCk0sIPMye0gphicXYJkcG8izzAcB2gAHRw","x-goog-hash":"crc32c=uyDmcg==,md5=Tq/CZaJh+82lmRBQqsqn5Q==","server":"UploadServer"},"url":"https://jsr.io/@std/media-types/1.1.0/_util.ts","time":1762267730}

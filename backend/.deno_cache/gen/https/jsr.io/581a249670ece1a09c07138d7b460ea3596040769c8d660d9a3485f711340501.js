@@ -1,0 +1,65 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+/**
+ * Utilities for
+ * {@link https://www.rfc-editor.org/rfc/rfc4648.html#section-5 | base64url}
+ * encoding and decoding.
+ *
+ * @module
+ */ import { calcSizeBase64, decode, encode } from "./_common64.ts";
+import { detach } from "./_common_detach.ts";
+const padding = "=".charCodeAt(0);
+const alphabet = new TextEncoder().encode("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_");
+const rAlphabet = new Uint8Array(128).fill(64); // alphabet.length
+alphabet.forEach((byte, i)=>rAlphabet[byte] = i);
+/**
+ * Convert data into a base64url-encoded string.
+ *
+ * @see {@link https://www.rfc-editor.org/rfc/rfc4648.html#section-5}
+ *
+ * @param data The data to encode.
+ * @returns The base64url-encoded string.
+ *
+ * @example Usage
+ * ```ts
+ * import { encodeBase64Url } from "@std/encoding/base64url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(encodeBase64Url("foobar"), "Zm9vYmFy");
+ * ```
+ */ export function encodeBase64Url(data) {
+  if (typeof data === "string") {
+    data = new TextEncoder().encode(data);
+  } else if (data instanceof ArrayBuffer) data = new Uint8Array(data).slice();
+  else data = data.slice();
+  const [output, i] = detach(data, calcSizeBase64(data.length));
+  let o = encode(output, i, 0, alphabet, padding);
+  o = output.indexOf(padding, o - 2);
+  return new TextDecoder().decode(// deno-lint-ignore no-explicit-any
+  o > 0 ? new Uint8Array(output.buffer.transfer(o)) : output);
+}
+/**
+ * Decodes a given base64url-encoded string.
+ *
+ * @see {@link https://www.rfc-editor.org/rfc/rfc4648.html#section-5}
+ *
+ * @param b64url The base64url-encoded string to decode.
+ * @returns The decoded data.
+ *
+ * @example Usage
+ * ```ts
+ * import { decodeBase64Url } from "@std/encoding/base64url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(
+ *   decodeBase64Url("Zm9vYmFy"),
+ *   new TextEncoder().encode("foobar")
+ * );
+ * ```
+ */ export function decodeBase64Url(b64url) {
+  const output = new TextEncoder().encode(b64url);
+  // deno-lint-ignore no-explicit-any
+  return new Uint8Array(output.buffer.transfer(decode(output, 0, 0, rAlphabet, padding)));
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vanNyLmlvL0BzdGQvZW5jb2RpbmcvMS4wLjEwL2Jhc2U2NHVybC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBDb3B5cmlnaHQgMjAxOC0yMDI1IHRoZSBEZW5vIGF1dGhvcnMuIE1JVCBsaWNlbnNlLlxuLy8gVGhpcyBtb2R1bGUgaXMgYnJvd3NlciBjb21wYXRpYmxlLlxuXG4vKipcbiAqIFV0aWxpdGllcyBmb3JcbiAqIHtAbGluayBodHRwczovL3d3dy5yZmMtZWRpdG9yLm9yZy9yZmMvcmZjNDY0OC5odG1sI3NlY3Rpb24tNSB8IGJhc2U2NHVybH1cbiAqIGVuY29kaW5nIGFuZCBkZWNvZGluZy5cbiAqXG4gKiBAbW9kdWxlXG4gKi9cblxuaW1wb3J0IHsgY2FsY1NpemVCYXNlNjQsIGRlY29kZSwgZW5jb2RlIH0gZnJvbSBcIi4vX2NvbW1vbjY0LnRzXCI7XG5pbXBvcnQgeyBkZXRhY2ggfSBmcm9tIFwiLi9fY29tbW9uX2RldGFjaC50c1wiO1xuaW1wb3J0IHR5cGUgeyBVaW50OEFycmF5XyB9IGZyb20gXCIuL190eXBlcy50c1wiO1xuZXhwb3J0IHR5cGUgeyBVaW50OEFycmF5XyB9O1xuXG5jb25zdCBwYWRkaW5nID0gXCI9XCIuY2hhckNvZGVBdCgwKTtcbmNvbnN0IGFscGhhYmV0ID0gbmV3IFRleHRFbmNvZGVyKClcbiAgLmVuY29kZShcIkFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5LV9cIik7XG5jb25zdCByQWxwaGFiZXQgPSBuZXcgVWludDhBcnJheSgxMjgpLmZpbGwoNjQpOyAvLyBhbHBoYWJldC5sZW5ndGhcbmFscGhhYmV0LmZvckVhY2goKGJ5dGUsIGkpID0+IHJBbHBoYWJldFtieXRlXSA9IGkpO1xuXG4vKipcbiAqIENvbnZlcnQgZGF0YSBpbnRvIGEgYmFzZTY0dXJsLWVuY29kZWQgc3RyaW5nLlxuICpcbiAqIEBzZWUge0BsaW5rIGh0dHBzOi8vd3d3LnJmYy1lZGl0b3Iub3JnL3JmYy9yZmM0NjQ4Lmh0bWwjc2VjdGlvbi01fVxuICpcbiAqIEBwYXJhbSBkYXRhIFRoZSBkYXRhIHRvIGVuY29kZS5cbiAqIEByZXR1cm5zIFRoZSBiYXNlNjR1cmwtZW5jb2RlZCBzdHJpbmcuXG4gKlxuICogQGV4YW1wbGUgVXNhZ2VcbiAqIGBgYHRzXG4gKiBpbXBvcnQgeyBlbmNvZGVCYXNlNjRVcmwgfSBmcm9tIFwiQHN0ZC9lbmNvZGluZy9iYXNlNjR1cmxcIjtcbiAqIGltcG9ydCB7IGFzc2VydEVxdWFscyB9IGZyb20gXCJAc3RkL2Fzc2VydFwiO1xuICpcbiAqIGFzc2VydEVxdWFscyhlbmNvZGVCYXNlNjRVcmwoXCJmb29iYXJcIiksIFwiWm05dlltRnlcIik7XG4gKiBgYGBcbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGVuY29kZUJhc2U2NFVybChcbiAgZGF0YTogQXJyYXlCdWZmZXIgfCBVaW50OEFycmF5IHwgc3RyaW5nLFxuKTogc3RyaW5nIHtcbiAgaWYgKHR5cGVvZiBkYXRhID09PSBcInN0cmluZ1wiKSB7XG4gICAgZGF0YSA9IG5ldyBUZXh0RW5jb2RlcigpLmVuY29kZShkYXRhKSBhcyBVaW50OEFycmF5XztcbiAgfSBlbHNlIGlmIChkYXRhIGluc3RhbmNlb2YgQXJyYXlCdWZmZXIpIGRhdGEgPSBuZXcgVWludDhBcnJheShkYXRhKS5zbGljZSgpO1xuICBlbHNlIGRhdGEgPSBkYXRhLnNsaWNlKCk7XG4gIGNvbnN0IFtvdXRwdXQsIGldID0gZGV0YWNoKFxuICAgIGRhdGEgYXMgVWludDhBcnJheV8sXG4gICAgY2FsY1NpemVCYXNlNjQoKGRhdGEgYXMgVWludDhBcnJheV8pLmxlbmd0aCksXG4gICk7XG4gIGxldCBvID0gZW5jb2RlKG91dHB1dCwgaSwgMCwgYWxwaGFiZXQsIHBhZGRpbmcpO1xuICBvID0gb3V0cHV0LmluZGV4T2YocGFkZGluZywgbyAtIDIpO1xuICByZXR1cm4gbmV3IFRleHREZWNvZGVyKCkuZGVjb2RlKFxuICAgIC8vIGRlbm8tbGludC1pZ25vcmUgbm8tZXhwbGljaXQtYW55XG4gICAgbyA+IDAgPyBuZXcgVWludDhBcnJheSgob3V0cHV0LmJ1ZmZlciBhcyBhbnkpLnRyYW5zZmVyKG8pKSA6IG91dHB1dCxcbiAgKTtcbn1cblxuLyoqXG4gKiBEZWNvZGVzIGEgZ2l2ZW4gYmFzZTY0dXJsLWVuY29kZWQgc3RyaW5nLlxuICpcbiAqIEBzZWUge0BsaW5rIGh0dHBzOi8vd3d3LnJmYy1lZGl0b3Iub3JnL3JmYy9yZmM0NjQ4Lmh0bWwjc2VjdGlvbi01fVxuICpcbiAqIEBwYXJhbSBiNjR1cmwgVGhlIGJhc2U2NHVybC1lbmNvZGVkIHN0cmluZyB0byBkZWNvZGUuXG4gKiBAcmV0dXJucyBUaGUgZGVjb2RlZCBkYXRhLlxuICpcbiAqIEBleGFtcGxlIFVzYWdlXG4gKiBgYGB0c1xuICogaW1wb3J0IHsgZGVjb2RlQmFzZTY0VXJsIH0gZnJvbSBcIkBzdGQvZW5jb2RpbmcvYmFzZTY0dXJsXCI7XG4gKiBpbXBvcnQgeyBhc3NlcnRFcXVhbHMgfSBmcm9tIFwiQHN0ZC9hc3NlcnRcIjtcbiAqXG4gKiBhc3NlcnRFcXVhbHMoXG4gKiAgIGRlY29kZUJhc2U2NFVybChcIlptOXZZbUZ5XCIpLFxuICogICBuZXcgVGV4dEVuY29kZXIoKS5lbmNvZGUoXCJmb29iYXJcIilcbiAqICk7XG4gKiBgYGBcbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGRlY29kZUJhc2U2NFVybChiNjR1cmw6IHN0cmluZyk6IFVpbnQ4QXJyYXlfIHtcbiAgY29uc3Qgb3V0cHV0ID0gbmV3IFRleHRFbmNvZGVyKCkuZW5jb2RlKGI2NHVybCkgYXMgVWludDhBcnJheV87XG4gIC8vIGRlbm8tbGludC1pZ25vcmUgbm8tZXhwbGljaXQtYW55XG4gIHJldHVybiBuZXcgVWludDhBcnJheSgob3V0cHV0LmJ1ZmZlciBhcyBhbnkpXG4gICAgLnRyYW5zZmVyKGRlY29kZShvdXRwdXQsIDAsIDAsIHJBbHBoYWJldCwgcGFkZGluZykpKTtcbn1cbiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxxREFBcUQ7QUFDckQscUNBQXFDO0FBRXJDOzs7Ozs7Q0FNQyxHQUVELFNBQVMsY0FBYyxFQUFFLE1BQU0sRUFBRSxNQUFNLFFBQVEsaUJBQWlCO0FBQ2hFLFNBQVMsTUFBTSxRQUFRLHNCQUFzQjtBQUk3QyxNQUFNLFVBQVUsSUFBSSxVQUFVLENBQUM7QUFDL0IsTUFBTSxXQUFXLElBQUksY0FDbEIsTUFBTSxDQUFDO0FBQ1YsTUFBTSxZQUFZLElBQUksV0FBVyxLQUFLLElBQUksQ0FBQyxLQUFLLGtCQUFrQjtBQUNsRSxTQUFTLE9BQU8sQ0FBQyxDQUFDLE1BQU0sSUFBTSxTQUFTLENBQUMsS0FBSyxHQUFHO0FBRWhEOzs7Ozs7Ozs7Ozs7Ozs7Q0FlQyxHQUNELE9BQU8sU0FBUyxnQkFDZCxJQUF1QztFQUV2QyxJQUFJLE9BQU8sU0FBUyxVQUFVO0lBQzVCLE9BQU8sSUFBSSxjQUFjLE1BQU0sQ0FBQztFQUNsQyxPQUFPLElBQUksZ0JBQWdCLGFBQWEsT0FBTyxJQUFJLFdBQVcsTUFBTSxLQUFLO09BQ3BFLE9BQU8sS0FBSyxLQUFLO0VBQ3RCLE1BQU0sQ0FBQyxRQUFRLEVBQUUsR0FBRyxPQUNsQixNQUNBLGVBQWUsQUFBQyxLQUFxQixNQUFNO0VBRTdDLElBQUksSUFBSSxPQUFPLFFBQVEsR0FBRyxHQUFHLFVBQVU7RUFDdkMsSUFBSSxPQUFPLE9BQU8sQ0FBQyxTQUFTLElBQUk7RUFDaEMsT0FBTyxJQUFJLGNBQWMsTUFBTSxDQUM3QixtQ0FBbUM7RUFDbkMsSUFBSSxJQUFJLElBQUksV0FBVyxBQUFDLE9BQU8sTUFBTSxDQUFTLFFBQVEsQ0FBQyxNQUFNO0FBRWpFO0FBRUE7Ozs7Ozs7Ozs7Ozs7Ozs7OztDQWtCQyxHQUNELE9BQU8sU0FBUyxnQkFBZ0IsTUFBYztFQUM1QyxNQUFNLFNBQVMsSUFBSSxjQUFjLE1BQU0sQ0FBQztFQUN4QyxtQ0FBbUM7RUFDbkMsT0FBTyxJQUFJLFdBQVcsQUFBQyxPQUFPLE1BQU0sQ0FDakMsUUFBUSxDQUFDLE9BQU8sUUFBUSxHQUFHLEdBQUcsV0FBVztBQUM5QyJ9
+// denoCacheMetadata=8717216945046267384,3897308659775222508

@@ -1,0 +1,51 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+/**
+ * Test whether the given string is a glob.
+ *
+ * @example Usage
+ * ```ts
+ * import { isGlob } from "@std/path/is-glob";
+ * import { assert } from "@std/assert";
+ *
+ * assert(!isGlob("foo/bar/../baz"));
+ * assert(isGlob("foo/*ar/../baz"));
+ * ```
+ *
+ * @param str String to test.
+ * @returns `true` if the given string is a glob, otherwise `false`
+ */
+export function isGlob(str: string): boolean {
+  const chars: Record<string, string> = { "{": "}", "(": ")", "[": "]" };
+  const regex =
+    /\\(.)|(^!|\*|\?|[\].+)]\?|\[[^[\\\]]+\]|\{[^{\\}]+\}|\(\?[:!=][^\\)]+\)|\([^(|]+\|[^\\)]+\))/;
+
+  if (str === "") {
+    return false;
+  }
+
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(str))) {
+    if (match[2]) return true;
+    let idx = match.index + match[0].length;
+
+    // if an open bracket/brace/paren is escaped,
+    // set the index to the next closing character
+    const open = match[1];
+    const close = open ? chars[open] : null;
+    if (open && close) {
+      const n = str.indexOf(close, idx);
+      if (n !== -1) {
+        idx = n + 1;
+      }
+    }
+
+    str = str.slice(idx);
+  }
+
+  return false;
+}
+
+// denoCacheMetadata={"headers":{"x-goog-generation":"1755088699327919","cache-control":"public, max-age=31536000, immutable","x-content-type-options":"nosniff","x-guploader-uploadid":"AOCedOE8JOC4KZ_MFOeOlyiACx8GePVPueMEl9lO8sY1auDXhA_Zo035vsnNxF2ph0PSaJ2bMU9J0p0","via":"1.1 google","expires":"Wed, 04 Nov 2026 14:00:11 GMT","x-goog-storage-class":"STANDARD","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-goog-stored-content-encoding":"identity","accept-ranges":"bytes","access-control-expose-headers":"*","cross-origin-resource-policy":"cross-origin","age":"2918","x-jsr-cache-status":"hit","content-length":"1229","date":"Tue, 04 Nov 2025 14:00:11 GMT","x-goog-stored-content-length":"1229","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-metageneration":"1","content-type":"text/typescript","x-goog-hash":"crc32c=vokGZg==,md5=jE6uci/qLKUwxRrHfS0NWQ==","etag":"\"8c4eae722fea2ca530c51ac77d2d0d59\"","server":"UploadServer","x-jsr-cache-id":"FRA","x-robots-tag":"noindex","access-control-allow-origin":"*","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';"},"url":"https://jsr.io/@std/path/1.1.2/is_glob.ts","time":1762267730}

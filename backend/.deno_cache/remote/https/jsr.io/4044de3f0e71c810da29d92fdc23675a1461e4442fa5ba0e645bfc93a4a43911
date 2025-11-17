@@ -1,0 +1,28 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+export function common(paths: string[], sep: string): string {
+  const [first = "", ...remaining] = paths;
+  const parts = first.split(sep);
+
+  let endOfPrefix = parts.length;
+  let append = "";
+  for (const path of remaining) {
+    const compare = path.split(sep);
+    if (compare.length <= endOfPrefix) {
+      endOfPrefix = compare.length;
+      append = "";
+    }
+
+    for (let i = 0; i < endOfPrefix; i++) {
+      if (compare[i] !== parts[i]) {
+        endOfPrefix = i;
+        append = i === 0 ? "" : sep;
+        break;
+      }
+    }
+  }
+  return parts.slice(0, endOfPrefix).join(sep) + append;
+}
+
+// denoCacheMetadata={"headers":{"x-goog-storage-class":"STANDARD","x-goog-stored-content-length":"697","cache-control":"public, max-age=31536000, immutable","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","access-control-allow-origin":"*","accept-ranges":"bytes","etag":"\"4939cb3adb2853994c00f232f5e46836\"","x-jsr-cache-status":"hit","x-robots-tag":"noindex","x-goog-metageneration":"1","x-guploader-uploadid":"AOCedOG6tClZ2XV-YsjOUUnxBoVCz7CGLnuta53P3y6a9VaeOD9xzp6oitIOc2f13FL52mTK4iWLW28","expires":"Wed, 04 Nov 2026 14:00:11 GMT","access-control-expose-headers":"*","cross-origin-resource-policy":"cross-origin","via":"1.1 google","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-goog-hash":"crc32c=ei81Mw==,md5=STnLOtsoU5lMAPIy9eRoNg==","age":"2918","content-length":"697","server":"UploadServer","date":"Tue, 04 Nov 2025 14:00:11 GMT","x-goog-stored-content-encoding":"identity","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","content-type":"text/typescript","x-jsr-cache-id":"FRA","x-goog-generation":"1755088699245074"},"url":"https://jsr.io/@std/path/1.1.2/_common/common.ts","time":1762267730}

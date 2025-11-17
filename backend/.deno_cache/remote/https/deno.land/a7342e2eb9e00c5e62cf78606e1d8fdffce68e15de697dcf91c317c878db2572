@@ -1,0 +1,134 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+import type {
+  NetAddr,
+  ServerRequest,
+  UpgradeWebSocketFn,
+  UpgradeWebSocketOptions,
+} from "./types.ts";
+import { createPromiseWithResolvers } from "./utils/create_promise_with_resolvers.ts";
+
+// deno-lint-ignore no-explicit-any
+export const DomResponse: typeof Response = (globalThis as any).Response ??
+  class MockResponse {};
+
+const maybeUpgradeWebSocket: UpgradeWebSocketFn | undefined =
+  "Deno" in globalThis && "upgradeWebSocket" in globalThis.Deno
+    // deno-lint-ignore no-explicit-any
+    ? (Deno as any).upgradeWebSocket.bind(Deno)
+    : undefined;
+
+export function isNativeRequest(r: ServerRequest): r is NativeRequest {
+  return r instanceof NativeRequest;
+}
+
+export interface NativeRequestInfo {
+  remoteAddr?: NetAddr;
+  upgradeWebSocket?: UpgradeWebSocketFn;
+}
+
+/** An internal oak abstraction for handling a Deno native request. Most users
+ * of oak do not need to worry about this abstraction. */
+export class NativeRequest implements ServerRequest {
+  #remoteAddr?: NetAddr;
+  // deno-lint-ignore no-explicit-any
+  #reject: (reason?: any) => void;
+  #request: Request;
+  #resolve: (value: Response) => void;
+  #resolved = false;
+  #response: Promise<Response>;
+  #upgradeWebSocket?: UpgradeWebSocketFn;
+
+  constructor(
+    request: Request,
+    info: NativeRequestInfo,
+  ) {
+    this.#remoteAddr = info.remoteAddr;
+    // this allows for the value to be explicitly undefined in the options
+    this.#upgradeWebSocket = "upgradeWebSocket" in info
+      ? info.upgradeWebSocket
+      : maybeUpgradeWebSocket;
+    this.#request = request;
+    const { resolve, reject, promise } = createPromiseWithResolvers<Response>();
+    this.#resolve = resolve;
+    this.#reject = reject;
+    this.#response = promise;
+  }
+
+  get body(): ReadableStream<Uint8Array> | null {
+    return this.#request.body;
+  }
+
+  get headers(): Headers {
+    return this.#request.headers;
+  }
+
+  get method(): string {
+    return this.#request.method;
+  }
+
+  get remoteAddr(): string | undefined {
+    return this.#remoteAddr?.hostname;
+  }
+
+  get request(): Request {
+    return this.#request;
+  }
+
+  get response(): Promise<Response> {
+    return this.#response;
+  }
+
+  get url(): string {
+    try {
+      const url = new URL(this.#request.url);
+      return this.#request.url.replace(url.origin, "");
+    } catch {
+      // we don't care about errors, we just want to fall back
+    }
+    return this.#request.url;
+  }
+
+  get rawUrl(): string {
+    return this.#request.url;
+  }
+
+  // deno-lint-ignore no-explicit-any
+  error(reason?: any): void {
+    if (this.#resolved) {
+      throw new Error("Request already responded to.");
+    }
+    this.#reject(reason);
+    this.#resolved = true;
+  }
+
+  getBody(): ReadableStream<Uint8Array> | null {
+    return this.#request.body;
+  }
+
+  respond(response: Response): void {
+    if (this.#resolved) {
+      throw new Error("Request already responded to.");
+    }
+    this.#resolved = true;
+    this.#resolve(response);
+  }
+
+  upgrade(options?: UpgradeWebSocketOptions): WebSocket {
+    if (this.#resolved) {
+      throw new Error("Request already responded to.");
+    }
+    if (!this.#upgradeWebSocket) {
+      throw new TypeError("Upgrading web sockets not supported.");
+    }
+    const { response, socket } = this.#upgradeWebSocket(
+      this.#request,
+      options,
+    );
+    this.#resolve(response);
+    this.#resolved = true;
+    return socket;
+  }
+}
+
+// denoCacheMetadata={"headers":{"x-amz-cf-id":"XCPFwT3U6mGOXFsHGQB0MO1EEEdO9MbqT2BqoteCpdhcua990S29rg==","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-opener-policy":"same-origin","x-amz-replication-status":"COMPLETED","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","referrer-policy":"strict-origin-when-cross-origin","x-amz-version-id":"fse6MvYsziu0TyHhS.Q2gcrMwoZyYKhG","server":"deno/gcp-europe-west3","vary":"Accept-Encoding, Origin","accept-ranges":"bytes","content-length":"3473","etag":"\"1a96812ca90993749ae1fc56a45bc0c3\"","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-amz-cf-pop":"FRA56-P5","x-cache":"Hit from cloudfront","content-type":"application/typescript; charset=utf-8","via":"http/2 edgeproxy-h","x-amz-server-side-encryption":"AES256","x-content-type-options":"nosniff","x-frame-options":"DENY","cache-control":"public, max-age=31536000, immutable","age":"7143825","access-control-allow-origin":"*","cross-origin-resource-policy":"same-origin","cross-origin-embedder-policy":"same-origin","date":"Wed, 13 Aug 2025 22:25:03 GMT","server-timing":"fetchSource;dur=2"},"url":"https://deno.land/x/oak@v17.1.6/http_server_native_request.ts","time":1762267728}

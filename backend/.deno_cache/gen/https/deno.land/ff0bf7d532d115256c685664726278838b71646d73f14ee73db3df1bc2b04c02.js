@@ -1,0 +1,56 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+/**
+ * A collection of oak specific APIs for management of ETags.
+ *
+ * @module
+ */ import { eTag } from "../deps.ts";
+import { BODY_TYPES } from "../utils/consts.ts";
+import { isAsyncIterable, isFsFile } from "../utils/type_guards.ts";
+/** For a given Context, try to determine the response body entity that an ETag
+ * can be calculated from. */ // deno-lint-ignore no-explicit-any
+export function getEntity(context) {
+  const { body } = context.response;
+  if (isFsFile(body)) {
+    return body.stat();
+  }
+  if (body instanceof Uint8Array) {
+    return Promise.resolve(body);
+  }
+  if (BODY_TYPES.includes(typeof body)) {
+    return Promise.resolve(String(body));
+  }
+  if (isAsyncIterable(body)) {
+    return Promise.resolve(undefined);
+  }
+  if (typeof body === "object" && body !== null) {
+    try {
+      const bodyText = JSON.stringify(body);
+      return Promise.resolve(bodyText);
+    } catch  {
+    // We don't really care about errors here
+    }
+  }
+  return Promise.resolve(undefined);
+}
+/**
+ * Create middleware that will attempt to decode the response.body into
+ * something that can be used to generate an `ETag` and add the `ETag` header to
+ * the response.
+ */ // deno-lint-ignore no-explicit-any
+export function factory(options) {
+  return async function etag(context, next) {
+    await next();
+    if (!context.response.headers.has("ETag")) {
+      const entity = await getEntity(context);
+      if (entity) {
+        // @ts-ignore the overloads aren't quite right in the upstream library
+        const etag = await eTag(entity, options);
+        if (etag) {
+          context.response.headers.set("ETag", etag);
+        }
+      }
+    }
+  };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vZGVuby5sYW5kL3gvb2FrQHYxNy4xLjYvbWlkZGxld2FyZS9ldGFnLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIENvcHlyaWdodCAyMDE4LTIwMjUgdGhlIG9hayBhdXRob3JzLiBBbGwgcmlnaHRzIHJlc2VydmVkLiBNSVQgbGljZW5zZS5cblxuLyoqXG4gKiBBIGNvbGxlY3Rpb24gb2Ygb2FrIHNwZWNpZmljIEFQSXMgZm9yIG1hbmFnZW1lbnQgb2YgRVRhZ3MuXG4gKlxuICogQG1vZHVsZVxuICovXG5cbmltcG9ydCB0eXBlIHsgU3RhdGUgfSBmcm9tIFwiLi4vYXBwbGljYXRpb24udHNcIjtcbmltcG9ydCB0eXBlIHsgQ29udGV4dCB9IGZyb20gXCIuLi9jb250ZXh0LnRzXCI7XG5pbXBvcnQgeyBlVGFnLCB0eXBlIEVUYWdPcHRpb25zIH0gZnJvbSBcIi4uL2RlcHMudHNcIjtcbmltcG9ydCB0eXBlIHsgTWlkZGxld2FyZSB9IGZyb20gXCIuLi9taWRkbGV3YXJlLnRzXCI7XG5pbXBvcnQgeyBCT0RZX1RZUEVTIH0gZnJvbSBcIi4uL3V0aWxzL2NvbnN0cy50c1wiO1xuaW1wb3J0IHsgaXNBc3luY0l0ZXJhYmxlLCBpc0ZzRmlsZSB9IGZyb20gXCIuLi91dGlscy90eXBlX2d1YXJkcy50c1wiO1xuXG4vKiogRm9yIGEgZ2l2ZW4gQ29udGV4dCwgdHJ5IHRvIGRldGVybWluZSB0aGUgcmVzcG9uc2UgYm9keSBlbnRpdHkgdGhhdCBhbiBFVGFnXG4gKiBjYW4gYmUgY2FsY3VsYXRlZCBmcm9tLiAqL1xuLy8gZGVuby1saW50LWlnbm9yZSBuby1leHBsaWNpdC1hbnlcbmV4cG9ydCBmdW5jdGlvbiBnZXRFbnRpdHk8UyBleHRlbmRzIFN0YXRlID0gUmVjb3JkPHN0cmluZywgYW55Pj4oXG4gIGNvbnRleHQ6IENvbnRleHQ8Uz4sXG4pOiBQcm9taXNlPHN0cmluZyB8IFVpbnQ4QXJyYXkgfCBEZW5vLkZpbGVJbmZvIHwgdW5kZWZpbmVkPiB7XG4gIGNvbnN0IHsgYm9keSB9ID0gY29udGV4dC5yZXNwb25zZTtcbiAgaWYgKGlzRnNGaWxlKGJvZHkpKSB7XG4gICAgcmV0dXJuIGJvZHkuc3RhdCgpO1xuICB9XG4gIGlmIChib2R5IGluc3RhbmNlb2YgVWludDhBcnJheSkge1xuICAgIHJldHVybiBQcm9taXNlLnJlc29sdmUoYm9keSk7XG4gIH1cbiAgaWYgKEJPRFlfVFlQRVMuaW5jbHVkZXModHlwZW9mIGJvZHkpKSB7XG4gICAgcmV0dXJuIFByb21pc2UucmVzb2x2ZShTdHJpbmcoYm9keSkpO1xuICB9XG4gIGlmIChpc0FzeW5jSXRlcmFibGUoYm9keSkpIHtcbiAgICByZXR1cm4gUHJvbWlzZS5yZXNvbHZlKHVuZGVmaW5lZCk7XG4gIH1cbiAgaWYgKHR5cGVvZiBib2R5ID09PSBcIm9iamVjdFwiICYmIGJvZHkgIT09IG51bGwpIHtcbiAgICB0cnkge1xuICAgICAgY29uc3QgYm9keVRleHQgPSBKU09OLnN0cmluZ2lmeShib2R5KTtcbiAgICAgIHJldHVybiBQcm9taXNlLnJlc29sdmUoYm9keVRleHQpO1xuICAgIH0gY2F0Y2gge1xuICAgICAgLy8gV2UgZG9uJ3QgcmVhbGx5IGNhcmUgYWJvdXQgZXJyb3JzIGhlcmVcbiAgICB9XG4gIH1cbiAgcmV0dXJuIFByb21pc2UucmVzb2x2ZSh1bmRlZmluZWQpO1xufVxuXG4vKipcbiAqIENyZWF0ZSBtaWRkbGV3YXJlIHRoYXQgd2lsbCBhdHRlbXB0IHRvIGRlY29kZSB0aGUgcmVzcG9uc2UuYm9keSBpbnRvXG4gKiBzb21ldGhpbmcgdGhhdCBjYW4gYmUgdXNlZCB0byBnZW5lcmF0ZSBhbiBgRVRhZ2AgYW5kIGFkZCB0aGUgYEVUYWdgIGhlYWRlciB0b1xuICogdGhlIHJlc3BvbnNlLlxuICovXG4vLyBkZW5vLWxpbnQtaWdub3JlIG5vLWV4cGxpY2l0LWFueVxuZXhwb3J0IGZ1bmN0aW9uIGZhY3Rvcnk8UyBleHRlbmRzIFN0YXRlID0gUmVjb3JkPHN0cmluZywgYW55Pj4oXG4gIG9wdGlvbnM/OiBFVGFnT3B0aW9ucyxcbik6IE1pZGRsZXdhcmU8Uz4ge1xuICByZXR1cm4gYXN5bmMgZnVuY3Rpb24gZXRhZyhjb250ZXh0OiBDb250ZXh0PFM+LCBuZXh0KSB7XG4gICAgYXdhaXQgbmV4dCgpO1xuICAgIGlmICghY29udGV4dC5yZXNwb25zZS5oZWFkZXJzLmhhcyhcIkVUYWdcIikpIHtcbiAgICAgIGNvbnN0IGVudGl0eSA9IGF3YWl0IGdldEVudGl0eShjb250ZXh0KTtcbiAgICAgIGlmIChlbnRpdHkpIHtcbiAgICAgICAgLy8gQHRzLWlnbm9yZSB0aGUgb3ZlcmxvYWRzIGFyZW4ndCBxdWl0ZSByaWdodCBpbiB0aGUgdXBzdHJlYW0gbGlicmFyeVxuICAgICAgICBjb25zdCBldGFnID0gYXdhaXQgZVRhZyhlbnRpdHksIG9wdGlvbnMpO1xuICAgICAgICBpZiAoZXRhZykge1xuICAgICAgICAgIGNvbnRleHQucmVzcG9uc2UuaGVhZGVycy5zZXQoXCJFVGFnXCIsIGV0YWcpO1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9O1xufVxuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLHlFQUF5RTtBQUV6RTs7OztDQUlDLEdBSUQsU0FBUyxJQUFJLFFBQTBCLGFBQWE7QUFFcEQsU0FBUyxVQUFVLFFBQVEscUJBQXFCO0FBQ2hELFNBQVMsZUFBZSxFQUFFLFFBQVEsUUFBUSwwQkFBMEI7QUFFcEU7MkJBQzJCLEdBQzNCLG1DQUFtQztBQUNuQyxPQUFPLFNBQVMsVUFDZCxPQUFtQjtFQUVuQixNQUFNLEVBQUUsSUFBSSxFQUFFLEdBQUcsUUFBUSxRQUFRO0VBQ2pDLElBQUksU0FBUyxPQUFPO0lBQ2xCLE9BQU8sS0FBSyxJQUFJO0VBQ2xCO0VBQ0EsSUFBSSxnQkFBZ0IsWUFBWTtJQUM5QixPQUFPLFFBQVEsT0FBTyxDQUFDO0VBQ3pCO0VBQ0EsSUFBSSxXQUFXLFFBQVEsQ0FBQyxPQUFPLE9BQU87SUFDcEMsT0FBTyxRQUFRLE9BQU8sQ0FBQyxPQUFPO0VBQ2hDO0VBQ0EsSUFBSSxnQkFBZ0IsT0FBTztJQUN6QixPQUFPLFFBQVEsT0FBTyxDQUFDO0VBQ3pCO0VBQ0EsSUFBSSxPQUFPLFNBQVMsWUFBWSxTQUFTLE1BQU07SUFDN0MsSUFBSTtNQUNGLE1BQU0sV0FBVyxLQUFLLFNBQVMsQ0FBQztNQUNoQyxPQUFPLFFBQVEsT0FBTyxDQUFDO0lBQ3pCLEVBQUUsT0FBTTtJQUNOLHlDQUF5QztJQUMzQztFQUNGO0VBQ0EsT0FBTyxRQUFRLE9BQU8sQ0FBQztBQUN6QjtBQUVBOzs7O0NBSUMsR0FDRCxtQ0FBbUM7QUFDbkMsT0FBTyxTQUFTLFFBQ2QsT0FBcUI7RUFFckIsT0FBTyxlQUFlLEtBQUssT0FBbUIsRUFBRSxJQUFJO0lBQ2xELE1BQU07SUFDTixJQUFJLENBQUMsUUFBUSxRQUFRLENBQUMsT0FBTyxDQUFDLEdBQUcsQ0FBQyxTQUFTO01BQ3pDLE1BQU0sU0FBUyxNQUFNLFVBQVU7TUFDL0IsSUFBSSxRQUFRO1FBQ1Ysc0VBQXNFO1FBQ3RFLE1BQU0sT0FBTyxNQUFNLEtBQUssUUFBUTtRQUNoQyxJQUFJLE1BQU07VUFDUixRQUFRLFFBQVEsQ0FBQyxPQUFPLENBQUMsR0FBRyxDQUFDLFFBQVE7UUFDdkM7TUFDRjtJQUNGO0VBQ0Y7QUFDRiJ9
+// denoCacheMetadata=2152910918659057559,15872458843179006186

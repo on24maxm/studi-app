@@ -1,0 +1,47 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import type { GlobOptions } from "./_common/glob_to_reg_exp.ts";
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { normalizeGlob as posixNormalizeGlob } from "./posix/normalize_glob.ts";
+import {
+  normalizeGlob as windowsNormalizeGlob,
+} from "./windows/normalize_glob.ts";
+
+export type { GlobOptions };
+
+/**
+ * Normalizes a glob string.
+ *
+ * Behaves like
+ * {@linkcode https://jsr.io/@std/path/doc/~/normalize | normalize()}, but
+ * doesn't collapse "**\/.." when `globstar` is true.
+ *
+ * @example Usage
+ * ```ts
+ * import { normalizeGlob } from "@std/path/normalize-glob";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(normalizeGlob("foo\\bar\\..\\baz"), "foo\\baz");
+ *   assertEquals(normalizeGlob("foo\\**\\..\\bar\\..\\baz", { globstar: true }), "foo\\**\\..\\baz");
+ * } else {
+ *   assertEquals(normalizeGlob("foo/bar/../baz"), "foo/baz");
+ *   assertEquals(normalizeGlob("foo/**\/../bar/../baz", { globstar: true }), "foo/**\/../baz");
+ * }
+ * ```
+ *
+ * @param glob Glob string to normalize.
+ * @param options Glob options.
+ * @returns The normalized glob string.
+ */
+export function normalizeGlob(
+  glob: string,
+  options: GlobOptions = {},
+): string {
+  return isWindows
+    ? windowsNormalizeGlob(glob, options)
+    : posixNormalizeGlob(glob, options);
+}
+
+// denoCacheMetadata={"headers":{"x-goog-storage-class":"STANDARD","x-goog-stored-content-length":"1442","x-goog-hash":"crc32c=fst5mw==,md5=W7zUmzD6QTFCV8VzAVAGCw==","via":"1.1 google","content-type":"text/typescript","x-jsr-cache-id":"FRA","cross-origin-resource-policy":"cross-origin","date":"Tue, 04 Nov 2025 14:00:11 GMT","x-guploader-uploadid":"AOCedOFCKCKFyXgf7AjEDNr2sADWmhq8lhT4P2WUwaNuFNpi4Z6yGgks0KX2I4YLU_e2dJ6CmzxQdPw","x-goog-stored-content-encoding":"identity","x-goog-metageneration":"1","server":"UploadServer","etag":"\"5bbcd49b30fa41314257c5730150060b\"","access-control-allow-origin":"*","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-robots-tag":"noindex","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-status":"hit","cache-control":"public, max-age=31536000, immutable","access-control-expose-headers":"*","x-goog-generation":"1755088699495110","content-length":"1442","accept-ranges":"bytes","expires":"Wed, 04 Nov 2026 14:00:11 GMT","age":"2918"},"url":"https://jsr.io/@std/path/1.1.2/normalize_glob.ts","time":1762267730}

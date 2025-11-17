@@ -1,0 +1,31 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { extname as posixExtname } from "./posix/extname.ts";
+import { extname as windowsExtname } from "./windows/extname.ts";
+/**
+ * Return the extension of the path with leading period (".").
+ *
+ * @example Usage
+ * ```ts
+ * import { extname } from "@std/path/extname";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(extname("C:\\home\\user\\Documents\\image.png"), ".png");
+ *   assertEquals(extname(new URL("file:///C:/home/user/Documents/image.png")), ".png");
+ * } else {
+ *   assertEquals(extname("/home/user/Documents/image.png"), ".png");
+ *   assertEquals(extname(new URL("file:///home/user/Documents/image.png")), ".png");
+ * }
+ * ```
+ *
+ * @param path Path with extension.
+ * @returns The file extension. E.g. returns `.ts` for `file.ts`.
+ */
+export function extname(path: string | URL): string {
+  return isWindows ? windowsExtname(path) : posixExtname(path);
+}
+
+// denoCacheMetadata={"headers":{"x-robots-tag":"noindex","cross-origin-resource-policy":"cross-origin","content-length":"1086","x-goog-stored-content-encoding":"identity","x-guploader-uploadid":"AOCedOF9AFZcdNxtbB8jwYlyzKsmLxXqRem7T_Cft24z75-NsnZvrTYHL-JriQX5HT5N7MM-W8yHYOk","x-goog-stored-content-length":"1086","x-goog-hash":"crc32c=56gX/Q==,md5=BajE28fBbbboF0hdN9kZhA==","access-control-expose-headers":"*","content-type":"text/typescript","date":"Tue, 04 Nov 2025 14:00:11 GMT","expires":"Wed, 04 Nov 2026 14:00:11 GMT","age":"2918","etag":"\"05a8c4dbc7c16db6e817485d37d91984\"","cache-control":"public, max-age=31536000, immutable","x-goog-generation":"1755088699400764","x-goog-metageneration":"1","x-goog-storage-class":"STANDARD","accept-ranges":"bytes","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-id":"FRA","x-jsr-cache-status":"hit","access-control-allow-origin":"*","x-content-type-options":"nosniff","via":"1.1 google","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","server":"UploadServer"},"url":"https://jsr.io/@std/path/1.1.2/extname.ts","time":1762267730}

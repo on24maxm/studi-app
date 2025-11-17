@@ -13,4 +13,4 @@ export { compare, hash } from "https://deno.land/x/bcrypt@v0.4.0/mod.ts";
 import mysql from "npm:mysql2@^2.3.3/promise";
 export { mysql };
 
-export { oakCors } from "@tajpouria/cors";
+export { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";

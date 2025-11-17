@@ -3,7 +3,7 @@ import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import {useAuthStore} from '../stores/authStore';
 import apiService from '../services/apiService.ts';
-import type { Deck } from '@/backend/src/models/deck.ts'
+import type { Deck } from '../models/deck.ts'
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -62,11 +62,11 @@ const createNewDeck = async () => {
 
     try {
         const response = await apiService.createDeck(newDeckName.value);
-        console.log('😈 response value: ' + response.data)
-        decks.value.push(response.data);
-        newDeckName.value = '';
-        await fetchDecks();
-        openCloseModalCreateDeck();
+    console.log('😈 response value: ' + response.data)
+    decks.value.push(response.data);
+    newDeckName.value = '';
+    await fetchDecks();
+    openCloseModalCreateDeck();
     } catch (error: any) {
         console.error('Ein Fehler ist aufgetreten: ', error);
         createDeckError.value = 'Ein Fehler ist aufgetreten';
@@ -143,7 +143,7 @@ const logout = () => {
         <div class="w-[500px bg-gray-600 p-10 rounded-lg flex flex flex-col justify-center">
         <form @submit.prevent="createNewDeck" class="">
             <input class="text-white outline-2 outline-white p-2 rounded-lg" type="text" v-model="newDeckName" placeholder="Stapelname eingeben" required></input>
-            <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" type="submit" :disabled="isCreating"> {{ isCreating ? 'Erstelle...' : 'Erstellen'}}</button>
+            <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 bg-[#B88A93]" type="submit" :disabled="isCreatingDeck"> {{ isCreatingDeck ? 'Erstelle...' : 'Erstellen'}}</button>
             <p v-if="createDeckError" class="text-red-500 font-sans text-sm">{{ createDeckError }}</p>
         </form>
         <button class="text-white p-2 rounded-lg m-2 pl-8 pr-8 outline-2 outline-[#B88A93]" @click="openCloseModalCreateDeck">Schließen</button>

@@ -1,0 +1,24 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+/** Memoisation of the feature detection of `Promise.withResolvers` */ const hasPromiseWithResolvers = "withResolvers" in Promise;
+/**
+ * Offloads to the native `Promise.withResolvers` when available.
+ *
+ * Currently Node.js does not support it, while Deno does.
+ */ export function createPromiseWithResolvers() {
+  if (hasPromiseWithResolvers) {
+    return Promise.withResolvers();
+  }
+  let resolve;
+  let reject;
+  const promise = new Promise((res, rej)=>{
+    resolve = res;
+    reject = rej;
+  });
+  return {
+    promise,
+    resolve: resolve,
+    reject: reject
+  };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vZGVuby5sYW5kL3gvb2FrQHYxNy4xLjYvdXRpbHMvY3JlYXRlX3Byb21pc2Vfd2l0aF9yZXNvbHZlcnMudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gQ29weXJpZ2h0IDIwMTgtMjAyNSB0aGUgb2FrIGF1dGhvcnMuIEFsbCByaWdodHMgcmVzZXJ2ZWQuIE1JVCBsaWNlbnNlLlxuXG4vKiogTWVtb2lzYXRpb24gb2YgdGhlIGZlYXR1cmUgZGV0ZWN0aW9uIG9mIGBQcm9taXNlLndpdGhSZXNvbHZlcnNgICovXG5jb25zdCBoYXNQcm9taXNlV2l0aFJlc29sdmVycyA9IFwid2l0aFJlc29sdmVyc1wiIGluIFByb21pc2U7XG5cbi8qKlxuICogT2ZmbG9hZHMgdG8gdGhlIG5hdGl2ZSBgUHJvbWlzZS53aXRoUmVzb2x2ZXJzYCB3aGVuIGF2YWlsYWJsZS5cbiAqXG4gKiBDdXJyZW50bHkgTm9kZS5qcyBkb2VzIG5vdCBzdXBwb3J0IGl0LCB3aGlsZSBEZW5vIGRvZXMuXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBjcmVhdGVQcm9taXNlV2l0aFJlc29sdmVyczxUPigpOiBQcm9taXNlV2l0aFJlc29sdmVyczxUPiB7XG4gIGlmIChoYXNQcm9taXNlV2l0aFJlc29sdmVycykge1xuICAgIHJldHVybiBQcm9taXNlLndpdGhSZXNvbHZlcnM8VD4oKTtcbiAgfVxuICBsZXQgcmVzb2x2ZTtcbiAgbGV0IHJlamVjdDtcbiAgY29uc3QgcHJvbWlzZSA9IG5ldyBQcm9taXNlPFQ+KChyZXMsIHJlaikgPT4ge1xuICAgIHJlc29sdmUgPSByZXM7XG4gICAgcmVqZWN0ID0gcmVqO1xuICB9KTtcbiAgcmV0dXJuIHsgcHJvbWlzZSwgcmVzb2x2ZTogcmVzb2x2ZSEsIHJlamVjdDogcmVqZWN0ISB9O1xufVxuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLHlFQUF5RTtBQUV6RSxvRUFBb0UsR0FDcEUsTUFBTSwwQkFBMEIsbUJBQW1CO0FBRW5EOzs7O0NBSUMsR0FDRCxPQUFPLFNBQVM7RUFDZCxJQUFJLHlCQUF5QjtJQUMzQixPQUFPLFFBQVEsYUFBYTtFQUM5QjtFQUNBLElBQUk7RUFDSixJQUFJO0VBQ0osTUFBTSxVQUFVLElBQUksUUFBVyxDQUFDLEtBQUs7SUFDbkMsVUFBVTtJQUNWLFNBQVM7RUFDWDtFQUNBLE9BQU87SUFBRTtJQUFTLFNBQVM7SUFBVSxRQUFRO0VBQVE7QUFDdkQifQ==
+// denoCacheMetadata=15979553643722048905,14755198761569528913

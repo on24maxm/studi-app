@@ -1,5 +1,5 @@
 import { mysql } from "../../deps.ts";
-import "@std/dotenv/load";
+// import "@std/dotenv/load";
 
 const pool = mysql.createPool({
     connectionLimit: 10,
@@ -16,8 +16,10 @@ try {
   const connection = await pool.getConnection();
   console.log('😈 Successfully connected to MariaDB');
   connection.release();
-} catch(_error) {
+} catch(error) {
   console.log("😈 Connection not successfull");
+  console.error(error);
+  Deno.exit(1);
 }
 
 export default pool;

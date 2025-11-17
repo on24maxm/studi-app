@@ -1,0 +1,40 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { encodeWhitespace } from "../_common/to_file_url.ts";
+import { isAbsolute } from "./is_absolute.ts";
+
+/**
+ * Converts a path string to a file URL.
+ *
+ * @example Usage
+ * ```ts
+ * import { toFileUrl } from "@std/path/windows/to-file-url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(toFileUrl("\\home\\foo"), new URL("file:///home/foo"));
+ * assertEquals(toFileUrl("C:\\Users\\foo"), new URL("file:///C:/Users/foo"));
+ * assertEquals(toFileUrl("\\\\127.0.0.1\\home\\foo"), new URL("file://127.0.0.1/home/foo"));
+ * ```
+ * @param path The path to convert.
+ * @returns The file URL.
+ */
+export function toFileUrl(path: string): URL {
+  if (!isAbsolute(path)) {
+    throw new TypeError(`Path must be absolute: received "${path}"`);
+  }
+  const [, hostname, pathname] = path.match(
+    /^(?:[/\\]{2}([^/\\]+)(?=[/\\](?:[^/\\]|$)))?(.*)/,
+  )!;
+  const url = new URL("file:///");
+  url.pathname = encodeWhitespace(pathname!.replace(/%/g, "%25"));
+  if (hostname !== undefined && hostname !== "localhost") {
+    url.hostname = hostname;
+    if (!url.hostname) {
+      throw new TypeError(`Invalid hostname: "${url.hostname}"`);
+    }
+  }
+  return url;
+}
+
+// denoCacheMetadata={"headers":{"server":"UploadServer","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-metageneration":"1","expires":"Wed, 04 Nov 2026 14:00:11 GMT","cache-control":"public, max-age=31536000, immutable","via":"1.1 google","x-jsr-cache-id":"FRA","x-goog-stored-content-length":"1271","x-goog-storage-class":"STANDARD","content-type":"text/typescript","x-robots-tag":"noindex","x-content-type-options":"nosniff","content-length":"1271","date":"Tue, 04 Nov 2025 14:00:11 GMT","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-jsr-cache-status":"hit","x-guploader-uploadid":"AOCedOFHT1eIxGdhocpaNZ3Iy9OSC_GZt4QRP0zA58CyO-liZgDEQ-GFgs-eGiLmHO2c4L6VfAK_cEk","x-goog-generation":"1755088699219145","x-goog-hash":"crc32c=venYrA==,md5=BsB5Zj7dZ1jZoh/GRcTOKA==","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","access-control-expose-headers":"*","age":"2918","cross-origin-resource-policy":"cross-origin","etag":"\"06c079663edd6758d9a21fc645c4ce28\"","accept-ranges":"bytes","access-control-allow-origin":"*","x-goog-stored-content-encoding":"identity"},"url":"https://jsr.io/@std/path/1.1.2/windows/to_file_url.ts","time":1762267730}

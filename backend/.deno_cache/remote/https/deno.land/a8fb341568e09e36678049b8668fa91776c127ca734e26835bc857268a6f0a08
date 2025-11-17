@@ -1,0 +1,88 @@
+import type { CorsOptions, CorsOptionsDelegate } from "./types.ts";
+import { Cors } from "./cors.ts";
+
+interface Req {
+  method: string;
+  headers: {
+    get(headerKey: string): string | null | undefined;
+  };
+}
+
+interface Res {
+  status?: number | string;
+  headers: {
+    get(headerKey: string): string | null | undefined;
+    set(headerKey: string, headerValue: string): any;
+  };
+}
+
+/**
+ * abcCors middleware wrapper
+ * @param o CorsOptions | CorsOptionsDelegate
+ * @link https://github.com/tajpouria/cors/blob/master/README.md#cors
+ */
+export const abcCors = <
+  RequestT extends Req = any,
+  ResponseT extends Res = any,
+  MiddlewareT extends (
+    next: (...args: any) => any,
+  ) => (context: { request: RequestT; response: ResponseT }) => any = any,
+>(
+  o?: CorsOptions | CorsOptionsDelegate<RequestT>,
+) => {
+  const corsOptionsDelegate = Cors.produceCorsOptionsDelegate<
+    CorsOptionsDelegate<RequestT>
+  >(o);
+
+  return ((abcNext) =>
+    async (context) => {
+      const next = () => abcNext(context);
+
+      try {
+        const { request, response } = context;
+
+        const options = await corsOptionsDelegate(request);
+
+        const corsOptions = Cors.produceCorsOptions(options || {});
+        const originDelegate = Cors.produceOriginDelegate(corsOptions);
+
+        if (originDelegate) {
+          const requestMethod = request.method;
+          const getRequestHeader = (headerKey: string) =>
+            request.headers.get(headerKey);
+          const getResponseHeader = (headerKey: string) =>
+            response.headers.get(headerKey);
+          const setResponseHeader = (headerKey: string, headerValue: string) =>
+            response.headers.set(headerKey, headerValue);
+          const setStatus = (
+            statusCode: number,
+          ) => (response.status = statusCode);
+          const end = () => {};
+
+          const origin = await originDelegate(getRequestHeader("origin"));
+
+          if (!origin) return next();
+          else {
+            corsOptions.origin = origin;
+
+            return new Cors({
+              corsOptions,
+              requestMethod,
+              getRequestHeader,
+              getResponseHeader,
+              setResponseHeader,
+              setStatus,
+              next,
+              end,
+            }).configureHeaders();
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      return next();
+    }) as MiddlewareT;
+};
+
+// denoCacheMetadata={"headers":{"accept-ranges":"bytes","cross-origin-resource-policy":"same-origin","date":"Sat, 08 Feb 2025 01:31:55 GMT","server":"deno/gcp-europe-west3","access-control-allow-origin":"*","server-timing":"fetchSource;dur=6","strict-transport-security":"max-age=63072000; includeSubDomains; preload","via":"http/2 edgeproxy-h","x-amz-replication-status":"COMPLETED","x-amz-version-id":"T5WuYK2Loy1RbEG3upxAK3Uuhilfbk1h","cross-origin-embedder-policy":"same-origin","x-amz-cf-pop":"FRA56-P5","cross-origin-opener-policy":"same-origin","x-content-type-options":"nosniff","content-length":"2432","cache-control":"public, max-age=31536000, immutable","etag":"\"e8b03d49f800a493da1f58238d6d658a\"","last-modified":"Wed, 26 May 2021 10:15:33 GMT","x-frame-options":"DENY","age":"23289415","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","content-type":"application/typescript; charset=utf-8","referrer-policy":"strict-origin-when-cross-origin","vary":"Accept-Encoding, Origin","x-amz-cf-id":"PU_ig4bHtPCBIs0NMp_i_lnDOg6k0wmeyIGBUsMAV7ZISI79nxLmTQ==","x-cache":"Hit from cloudfront"},"url":"https://deno.land/x/cors@v1.2.2/abcCors.ts","time":1762267728}

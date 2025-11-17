@@ -1,0 +1,33 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+/**
+ * Error thrown when an assertion fails.
+ *
+ * @example Usage
+ * ```ts ignore
+ * import { AssertionError } from "@std/assert";
+ *
+ * try {
+ *   throw new AssertionError("foo", { cause: "bar" });
+ * } catch (error) {
+ *   if (error instanceof AssertionError) {
+ *     error.message === "foo"; // true
+ *     error.cause === "bar"; // true
+ *   }
+ * }
+ * ```
+ */
+export class AssertionError extends Error {
+  /** Constructs a new instance.
+   *
+   * @param message The error message.
+   * @param options Additional options. This argument is still unstable. It may change in the future release.
+   */
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "AssertionError";
+  }
+}
+
+// denoCacheMetadata={"headers":{"x-goog-generation":"1755088702023973","x-goog-metageneration":"1","x-jsr-cache-id":"FRA","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-status":"miss","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","date":"Tue, 04 Nov 2025 14:48:49 GMT","last-modified":"Wed, 13 Aug 2025 12:38:22 GMT","x-guploader-uploadid":"AOCedOEQhg_OhiHbTdQVIktyOqCUKNc2XhNkXqXayQg6XRmxvnZ-BW6mT_6Qa625p6sgLMGW2gzuu-c","x-goog-stored-content-length":"821","accept-ranges":"bytes","x-goog-storage-class":"STANDARD","server":"UploadServer","content-type":"text/typescript","access-control-expose-headers":"*","x-goog-hash":"crc32c=k27b7A==,md5=TNAJPC+o+Ahn39CUPb6WjA==","x-content-type-options":"nosniff","cross-origin-resource-policy":"cross-origin","etag":"\"4cd0093c2fa8f80867dfd0943dbe968c\"","expires":"Wed, 04 Nov 2026 14:48:49 GMT","x-goog-stored-content-encoding":"identity","via":"1.1 google","content-length":"821","x-robots-tag":"noindex"},"url":"https://jsr.io/@std/assert/1.0.14/assertion_error.ts","time":1762267730}

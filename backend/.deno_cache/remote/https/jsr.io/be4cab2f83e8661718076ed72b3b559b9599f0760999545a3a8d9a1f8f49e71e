@@ -1,0 +1,48 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import type { GlobOptions } from "../_common/glob_to_reg_exp.ts";
+import { join } from "./join.ts";
+import { SEPARATOR } from "./constants.ts";
+import { normalizeGlob } from "./normalize_glob.ts";
+
+export type { GlobOptions };
+
+/**
+ * Like join(), but doesn't collapse "**\/.." when `globstar` is true.
+ *
+ * @example Usage
+ *
+ * ```ts
+ * import { joinGlobs } from "@std/path/windows/join-globs";
+ * import { assertEquals } from "@std/assert";
+ *
+ * const joined = joinGlobs(["foo", "**", "bar"], { globstar: true });
+ * assertEquals(joined, "foo\\**\\bar");
+ * ```
+ *
+ * @param globs The globs to join.
+ * @param options The options for glob pattern.
+ * @returns The joined glob pattern.
+ */
+export function joinGlobs(
+  globs: string[],
+  options: Pick<GlobOptions, "globstar"> = {},
+): string {
+  const { globstar = false } = options;
+  if (!globstar || globs.length === 0) {
+    return join(...globs);
+  }
+  let joined: string | undefined;
+  for (const glob of globs) {
+    const path = glob;
+    if (path.length > 0) {
+      if (!joined) joined = path;
+      else joined += `${SEPARATOR}${path}`;
+    }
+  }
+  if (!joined) return ".";
+  return normalizeGlob(joined, { globstar });
+}
+
+// denoCacheMetadata={"headers":{"x-goog-storage-class":"STANDARD","server":"UploadServer","via":"1.1 google","x-jsr-cache-status":"hit","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cross-origin-resource-policy":"cross-origin","x-robots-tag":"noindex","x-goog-hash":"crc32c=+Fbpcw==,md5=bQrS1RPLCUDizvyvXfFqPA==","x-goog-stored-content-length":"1280","date":"Tue, 04 Nov 2025 14:00:11 GMT","access-control-expose-headers":"*","accept-ranges":"bytes","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","age":"2918","expires":"Wed, 04 Nov 2026 14:00:11 GMT","access-control-allow-origin":"*","x-goog-generation":"1755088699211759","cache-control":"public, max-age=31536000, immutable","x-guploader-uploadid":"AOCedOGdOo5ipJCukMCBD8T2vA42M-8y1dQY0lwEPLtyC5F6Jgf3H8EKZqJDTDay0x8eLs0qvGkwDG0","x-goog-metageneration":"1","etag":"\"6d0ad2d513cb0940e2cefcaf5df16a3c\"","content-type":"text/typescript","x-jsr-cache-id":"FRA","content-length":"1280","x-goog-stored-content-encoding":"identity"},"url":"https://jsr.io/@std/path/1.1.2/windows/join_globs.ts","time":1762267730}

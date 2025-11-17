@@ -1,0 +1,55 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { assertPath } from "./assert_path.ts";
+
+export function stripSuffix(name: string, suffix: string): string {
+  if (suffix.length >= name.length) {
+    return name;
+  }
+
+  const lenDiff = name.length - suffix.length;
+
+  for (let i = suffix.length - 1; i >= 0; --i) {
+    if (name.charCodeAt(lenDiff + i) !== suffix.charCodeAt(i)) {
+      return name;
+    }
+  }
+
+  return name.slice(0, -suffix.length);
+}
+
+export function lastPathSegment(
+  path: string,
+  isSep: (char: number) => boolean,
+  start = 0,
+): string {
+  let matchedNonSeparator = false;
+  let end = path.length;
+
+  for (let i = path.length - 1; i >= start; --i) {
+    if (isSep(path.charCodeAt(i))) {
+      if (matchedNonSeparator) {
+        start = i + 1;
+        break;
+      }
+    } else if (!matchedNonSeparator) {
+      matchedNonSeparator = true;
+      end = i + 1;
+    }
+  }
+
+  return path.slice(start, end);
+}
+
+export function assertArgs(path: string, suffix: string) {
+  assertPath(path);
+  if (path.length === 0) return path;
+  if (typeof suffix !== "string") {
+    throw new TypeError(
+      `Suffix must be a string, received "${JSON.stringify(suffix)}"`,
+    );
+  }
+}
+
+// denoCacheMetadata={"headers":{"x-goog-generation":"1755088699186464","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","cross-origin-resource-policy":"cross-origin","server":"UploadServer","x-jsr-cache-status":"hit","x-jsr-cache-id":"FRA","x-goog-metageneration":"1","x-goog-hash":"crc32c=Se+50g==,md5=ABPJMiIHwFZzjrqX8lAjDA==","access-control-expose-headers":"*","x-content-type-options":"nosniff","x-goog-storage-class":"STANDARD","etag":"\"0013c9322207c056738eba97f250230c\"","x-robots-tag":"noindex","x-goog-stored-content-length":"1243","expires":"Wed, 04 Nov 2026 14:00:11 GMT","content-length":"1243","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"public, max-age=31536000, immutable","content-type":"text/typescript","age":"2918","date":"Tue, 04 Nov 2025 14:00:11 GMT","access-control-allow-origin":"*","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-guploader-uploadid":"AOCedOE5ilzaoYMliUGe3CVfdZskWe1x3FZotxFR-p_3S-HB5Gk4mRIv1a-ILnBz4Onoh5i6iPXDI3U","accept-ranges":"bytes","x-goog-stored-content-encoding":"identity","via":"1.1 google"},"url":"https://jsr.io/@std/path/1.1.2/_common/basename.ts","time":1762267730}

@@ -1,0 +1,32 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { toFileUrl as posixToFileUrl } from "./posix/to_file_url.ts";
+import { toFileUrl as windowsToFileUrl } from "./windows/to_file_url.ts";
+
+/**
+ * Converts a path string to a file URL.
+ *
+ * @example Usage
+ * ```ts
+ * import { toFileUrl } from "@std/path/to-file-url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(toFileUrl("\\home\\foo"), new URL("file:///home/foo"));
+ *   assertEquals(toFileUrl("C:\\Users\\foo"), new URL("file:///C:/Users/foo"));
+ *   assertEquals(toFileUrl("\\\\127.0.0.1\\home\\foo"), new URL("file://127.0.0.1/home/foo"));
+ * } else {
+ *   assertEquals(toFileUrl("/home/foo"), new URL("file:///home/foo"));
+ * }
+ * ```
+ *
+ * @param path Path to convert to file URL.
+ * @returns The file URL equivalent to the path.
+ */
+export function toFileUrl(path: string): URL {
+  return isWindows ? windowsToFileUrl(path) : posixToFileUrl(path);
+}
+
+// denoCacheMetadata={"headers":{"x-goog-hash":"crc32c=buhgkw==,md5=QCjDIe+v+2sVNANkhsvf/Q==","server":"UploadServer","x-goog-metageneration":"1","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"bytes","content-type":"text/typescript","x-goog-stored-content-encoding":"identity","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","cross-origin-resource-policy":"cross-origin","x-jsr-cache-id":"FRA","cache-control":"public, max-age=31536000, immutable","via":"1.1 google","x-robots-tag":"noindex","x-goog-storage-class":"STANDARD","etag":"\"4028c321efaffb6b1534036486cbdffd\"","date":"Tue, 04 Nov 2025 14:00:11 GMT","x-goog-stored-content-length":"1077","content-length":"1077","x-goog-generation":"1755088699435804","x-jsr-cache-status":"hit","access-control-allow-origin":"*","access-control-expose-headers":"*","x-guploader-uploadid":"AOCedOFFHDw34x5KzizvOxoXkiGlqtay9B3OPQwdwE3qarHmq9igXbHNdHSGCRSt4hBSdx1wY2BpNjI","expires":"Wed, 04 Nov 2026 14:00:11 GMT","age":"2918","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-content-type-options":"nosniff"},"url":"https://jsr.io/@std/path/1.1.2/to_file_url.ts","time":1762267730}

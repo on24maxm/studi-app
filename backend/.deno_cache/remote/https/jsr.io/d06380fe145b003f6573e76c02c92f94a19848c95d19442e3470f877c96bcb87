@@ -1,0 +1,23 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+/**
+ * Converts a path to a namespaced path. This function returns the path as is on posix.
+ *
+ * @example Usage
+ * ```ts
+ * import { toNamespacedPath } from "@std/path/posix/to-namespaced-path";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(toNamespacedPath("/home/foo"), "/home/foo");
+ * ```
+ *
+ * @param path The path.
+ * @returns The namespaced path.
+ */
+export function toNamespacedPath(path: string): string {
+  // Non-op on posix systems
+  return path;
+}
+
+// denoCacheMetadata={"headers":{"x-goog-storage-class":"STANDARD","content-type":"text/typescript","x-jsr-cache-id":"FRA","x-robots-tag":"noindex","access-control-allow-origin":"*","x-goog-stored-content-length":"575","x-goog-metageneration":"1","content-length":"575","x-goog-generation":"1755088699336410","accept-ranges":"bytes","etag":"\"d210f6bd34040d0b8762dc9ac747d111\"","server":"UploadServer","x-guploader-uploadid":"AOCedOEtnxffC2VJo7wRqP4ijOyAqLu1N7Mjn4JxvQaBy6pL-eAlVOoO4-chrtMC-U6ibgFFB_CeI_c","x-goog-hash":"crc32c=sUIEdg==,md5=0hD2vTQEDQuHYtyax0fREQ==","cache-control":"public, max-age=31536000, immutable","x-jsr-cache-status":"hit","access-control-expose-headers":"*","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","age":"2918","cross-origin-resource-policy":"cross-origin","via":"1.1 google","date":"Tue, 04 Nov 2025 14:00:11 GMT","expires":"Wed, 04 Nov 2026 14:00:11 GMT","x-content-type-options":"nosniff","x-goog-stored-content-encoding":"identity"},"url":"https://jsr.io/@std/path/1.1.2/posix/to_namespaced_path.ts","time":1762267730}

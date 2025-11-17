@@ -27,7 +27,7 @@ const handlelogin = async () => {
                 router.push('/dashboard');
             }
             else{
-                next;
+                errorMessage.value = 'Anmeldung fehlgeschlagen. Versuchen Sie es erneut.';
             }
     }
     catch(error) {

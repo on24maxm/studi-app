@@ -1,0 +1,35 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+import { normalize as posixNormalize } from "./posix/normalize.ts";
+import { normalize as windowsNormalize } from "./windows/normalize.ts";
+/**
+ * Normalize the path, resolving `'..'` and `'.'` segments.
+ *
+ * Note: Resolving these segments does not necessarily mean that all will be
+ * eliminated. A `'..'` at the top-level will be preserved, and an empty path is
+ * canonically `'.'`.
+ *
+ * @example Usage
+ * ```ts
+ * import { normalize } from "@std/path/normalize";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(normalize("C:\\foo\\bar\\..\\baz\\quux"), "C:\\foo\\baz\\quux");
+ *   assertEquals(normalize(new URL("file:///C:/foo/bar/../baz/quux")), "C:\\foo\\baz\\quux");
+ * } else {
+ *   assertEquals(normalize("/foo/bar/../baz/quux"), "/foo/baz/quux");
+ *   assertEquals(normalize(new URL("file:///foo/bar/../baz/quux")), "/foo/baz/quux");
+ * }
+ * ```
+ *
+ * @param path Path to be normalized
+ * @returns The normalized path.
+ */
+export function normalize(path: string | URL): string {
+  return isWindows ? windowsNormalize(path) : posixNormalize(path);
+}
+
+// denoCacheMetadata={"headers":{"x-goog-hash":"crc32c=+F2WnQ==,md5=SKXcdIogTICIUgi0X2ERHQ==","accept-ranges":"bytes","x-guploader-uploadid":"AOCedOGOyBTeZUjGZk-V8P9f7jj0PWxEghwpgKPUAnwXbh7iKBJFgGXSPUW30e0zwhr5CCF2JjrBsTM","content-length":"1271","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","access-control-expose-headers":"*","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","expires":"Wed, 04 Nov 2026 14:00:11 GMT","x-goog-stored-content-encoding":"identity","age":"2918","content-type":"text/typescript","x-goog-storage-class":"STANDARD","server":"UploadServer","x-robots-tag":"noindex","date":"Tue, 04 Nov 2025 14:00:11 GMT","x-jsr-cache-status":"hit","x-content-type-options":"nosniff","via":"1.1 google","cache-control":"public, max-age=31536000, immutable","x-jsr-cache-id":"FRA","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","etag":"\"48a5dc748a204c80885208b45f61111d\"","x-goog-metageneration":"1","x-goog-stored-content-length":"1271","access-control-allow-origin":"*","cross-origin-resource-policy":"cross-origin","x-goog-generation":"1755088699381096"},"url":"https://jsr.io/@std/path/1.1.2/normalize.ts","time":1762267730}

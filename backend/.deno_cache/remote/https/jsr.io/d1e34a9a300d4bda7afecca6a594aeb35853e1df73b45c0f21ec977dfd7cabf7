@@ -1,0 +1,45 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import type { GlobOptions } from "../_common/glob_to_reg_exp.ts";
+import { normalize } from "./normalize.ts";
+import { SEPARATOR_PATTERN } from "./constants.ts";
+
+export type { GlobOptions };
+
+/**
+ * Like normalize(), but doesn't collapse "**\/.." when `globstar` is true.
+ *
+ * @example Usage
+ * ```ts
+ * import { normalizeGlob } from "@std/path/windows/normalize-glob";
+ * import { assertEquals } from "@std/assert";
+ *
+ * const normalized = normalizeGlob("**\\foo\\..\\bar", { globstar: true });
+ * assertEquals(normalized, "**\\bar");
+ * ```
+ *
+ * @param glob The glob pattern to normalize.
+ * @param options The options for glob pattern.
+ * @returns The normalized glob pattern.
+ */
+export function normalizeGlob(
+  glob: string,
+  options: Pick<GlobOptions, "globstar"> = {},
+): string {
+  const { globstar = false }: GlobOptions = options;
+  if (glob.match(/\0/g)) {
+    throw new Error(`Glob contains invalid characters: "${glob}"`);
+  }
+  if (!globstar) {
+    return normalize(glob);
+  }
+  const s = SEPARATOR_PATTERN.source;
+  const badParentPattern = new RegExp(
+    `(?<=(${s}|^)\\*\\*${s})\\.\\.(?=${s}|$)`,
+    "g",
+  );
+  return normalize(glob.replace(badParentPattern, "\0")).replace(/\0/g, "..");
+}
+
+// denoCacheMetadata={"headers":{"via":"1.1 google","cross-origin-resource-policy":"cross-origin","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-hash":"crc32c=J+esXg==,md5=MVrxck9T34syIIKN4VkEdg==","x-jsr-cache-id":"FRA","x-goog-generation":"1755088699464679","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","x-goog-storage-class":"STANDARD","access-control-expose-headers":"*","accept-ranges":"bytes","age":"2918","x-jsr-cache-status":"hit","access-control-allow-origin":"*","date":"Tue, 04 Nov 2025 14:00:11 GMT","cache-control":"public, max-age=31536000, immutable","x-guploader-uploadid":"AOCedOELiIwrLeR3Yu85OmHh3DpC9iqiOWaFR73CEzPAfHstVrz62Kwu2FMGRojZl5-H4TCwDsvHSVU","x-goog-stored-content-encoding":"identity","content-length":"1309","expires":"Wed, 04 Nov 2026 14:00:11 GMT","etag":"\"315af1724f53df8b3220828de1590476\"","content-type":"text/typescript","x-goog-stored-content-length":"1309","x-goog-metageneration":"1","server":"UploadServer","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-robots-tag":"noindex"},"url":"https://jsr.io/@std/path/1.1.2/windows/normalize_glob.ts","time":1762267730}

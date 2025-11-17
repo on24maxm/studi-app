@@ -1,0 +1,10 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+export function checkWindows() {
+  // deno-lint-ignore no-explicit-any
+  const global = globalThis;
+  const os = global.Deno?.build?.os;
+  // Check Deno, then the remaining runtimes (e.g. Node, Bun and the browser)
+  return typeof os === "string" ? os === "windows" : global.navigator?.platform?.startsWith("Win") ?? global.process?.platform?.startsWith("win") ?? false;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vanNyLmlvL0BzdGQvaW50ZXJuYWwvMS4wLjEwL19vcy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBDb3B5cmlnaHQgMjAxOC0yMDI1IHRoZSBEZW5vIGF1dGhvcnMuIE1JVCBsaWNlbnNlLlxuXG5leHBvcnQgZnVuY3Rpb24gY2hlY2tXaW5kb3dzKCk6IGJvb2xlYW4ge1xuICAvLyBkZW5vLWxpbnQtaWdub3JlIG5vLWV4cGxpY2l0LWFueVxuICBjb25zdCBnbG9iYWwgPSBnbG9iYWxUaGlzIGFzIGFueTtcbiAgY29uc3Qgb3MgPSBnbG9iYWwuRGVubz8uYnVpbGQ/Lm9zO1xuXG4gIC8vIENoZWNrIERlbm8sIHRoZW4gdGhlIHJlbWFpbmluZyBydW50aW1lcyAoZS5nLiBOb2RlLCBCdW4gYW5kIHRoZSBicm93c2VyKVxuICByZXR1cm4gdHlwZW9mIG9zID09PSBcInN0cmluZ1wiXG4gICAgPyBvcyA9PT0gXCJ3aW5kb3dzXCJcbiAgICA6IGdsb2JhbC5uYXZpZ2F0b3I/LnBsYXRmb3JtPy5zdGFydHNXaXRoKFwiV2luXCIpID8/XG4gICAgICBnbG9iYWwucHJvY2Vzcz8ucGxhdGZvcm0/LnN0YXJ0c1dpdGgoXCJ3aW5cIikgPz8gZmFsc2U7XG59XG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEscURBQXFEO0FBRXJELE9BQU8sU0FBUztFQUNkLG1DQUFtQztFQUNuQyxNQUFNLFNBQVM7RUFDZixNQUFNLEtBQUssT0FBTyxJQUFJLEVBQUUsT0FBTztFQUUvQiwyRUFBMkU7RUFDM0UsT0FBTyxPQUFPLE9BQU8sV0FDakIsT0FBTyxZQUNQLE9BQU8sU0FBUyxFQUFFLFVBQVUsV0FBVyxVQUN2QyxPQUFPLE9BQU8sRUFBRSxVQUFVLFdBQVcsVUFBVTtBQUNyRCJ9
+// denoCacheMetadata=1945113346532636394,7248886655440732875

@@ -1,0 +1,20 @@
+// Copyright 2018-2025 the oak authors. All rights reserved. MIT license.
+
+import { createHttpError } from "../deps.ts";
+
+/**
+ * Safely decode a URI component, where if it fails, instead of throwing,
+ * just returns the original string
+ */
+export function decode(pathname: string): string {
+  try {
+    return decodeURI(pathname);
+  } catch (err) {
+    if (err instanceof URIError) {
+      throw createHttpError(400, "Failed to decode URI", { expose: false });
+    }
+    throw err;
+  }
+}
+
+// denoCacheMetadata={"headers":{"x-amz-server-side-encryption":"AES256","x-amz-cf-pop":"FRA56-P5","x-cache":"Hit from cloudfront","x-content-type-options":"nosniff","x-frame-options":"DENY","server-timing":"fetchSource;dur=8","cross-origin-opener-policy":"same-origin","etag":"\"1adee88300397af9b78e6c6ac20acba3\"","age":"7143825","cache-control":"public, max-age=31536000, immutable","content-type":"application/typescript; charset=utf-8","accept-ranges":"bytes","cross-origin-embedder-policy":"same-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","content-length":"488","via":"http/2 edgeproxy-h","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","server":"deno/gcp-europe-west3","vary":"Accept-Encoding, Origin","x-amz-cf-id":"MiTB-RclsLvL8ESFkn_2l6MAZhMkeRHXjASJGoqh-74ctgojMBQw4Q==","date":"Wed, 13 Aug 2025 22:25:05 GMT","last-modified":"Fri, 08 Aug 2025 23:08:39 GMT","x-amz-replication-status":"COMPLETED","access-control-allow-origin":"*","referrer-policy":"strict-origin-when-cross-origin","x-amz-version-id":"JH77vlziVo.La6ZMglxvRg5y5oVPIo4B","cross-origin-resource-policy":"same-origin"},"url":"https://deno.land/x/oak@v17.1.6/utils/decode.ts","time":1762267729}

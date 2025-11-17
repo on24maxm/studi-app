@@ -1,0 +1,20 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+import { isWindows } from "jsr:@std/internal@^1.0.10/os";
+
+/**
+ * The character used to separate entries in the PATH environment variable.
+ * On Windows, this is `;`. On all other platforms, this is `:`.
+ */
+export const DELIMITER = isWindows ? ";" as const : ":" as const;
+/**
+ * The character used to separate components of a file path.
+ * On Windows, this is `\`. On all other platforms, this is `/`.
+ */
+export const SEPARATOR = isWindows ? "\\" as const : "/" as const;
+/**
+ * A regular expression that matches one or more path separators.
+ */
+export const SEPARATOR_PATTERN = isWindows ? /[\\/]+/ : /\/+/;
+
+// denoCacheMetadata={"headers":{"x-goog-metageneration":"1","x-guploader-uploadid":"AOCedOEHPm1nJU13Nw5RaZybVFimIwOfHCKTsnbcskPvuTD1Q9Q0RmGI3ES7mIZnFQdY7szJfMuXbKI","content-length":"704","x-jsr-cache-id":"FRA","content-type":"text/typescript","x-jsr-cache-status":"hit","x-goog-stored-content-length":"704","via":"1.1 google","x-goog-storage-class":"STANDARD","x-goog-generation":"1755088699301267","x-goog-stored-content-encoding":"identity","date":"Tue, 04 Nov 2025 14:00:11 GMT","expires":"Wed, 04 Nov 2026 14:00:11 GMT","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","etag":"\"98ddbc2c164cfb9cccc23baf218cc3cd\"","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*","access-control-expose-headers":"*","cross-origin-resource-policy":"cross-origin","x-content-type-options":"nosniff","age":"2918","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"bytes","x-robots-tag":"noindex","server":"UploadServer","x-goog-hash":"crc32c=nV5hcQ==,md5=mN28LBZM+5zMwjuvIYzDzQ==","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';"},"url":"https://jsr.io/@std/path/1.1.2/constants.ts","time":1762267730}

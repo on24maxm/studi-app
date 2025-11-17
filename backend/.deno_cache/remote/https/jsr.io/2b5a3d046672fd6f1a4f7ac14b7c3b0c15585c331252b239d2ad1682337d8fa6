@@ -1,0 +1,37 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { common as _common } from "./_common/common.ts";
+import { SEPARATOR } from "./constants.ts";
+
+/**
+ * Determines the common path from a set of paths for the given OS.
+ *
+ * @param paths Paths to search for common path.
+ * @returns The common path.
+ *
+ * @example Usage
+ * ```ts
+ * import { common } from "@std/path/common";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   const path = common([
+ *     "C:\\deno\\std\\path\\mod.ts",
+ *     "C:\\deno\\std\\fs\\mod.ts"
+ *   ]);
+ *   assertEquals(path, "C:\\deno\\std\\");
+ * } else {
+ *   const path = common([
+ *     "./deno/std/path/mod.ts",
+ *     "./deno/std/fs/mod.ts"
+ *   ]);
+ *   assertEquals(path, "./deno/std/");
+ * }
+ * ```
+ */
+export function common(paths: string[]): string {
+  return _common(paths, SEPARATOR);
+}
+
+// denoCacheMetadata={"headers":{"cross-origin-resource-policy":"cross-origin","x-goog-metageneration":"1","x-guploader-uploadid":"AOCedOFm1U3Nfi1Aa6bREY8l-uLkX_9JsQ38UOz3kvuH7jhT_MJyz5oFw2AbbpNAFhFojxP7","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","age":"1274","x-jsr-cache-status":"hit","date":"Tue, 04 Nov 2025 14:27:35 GMT","accept-ranges":"bytes","x-content-type-options":"nosniff","content-type":"text/typescript","expires":"Wed, 04 Nov 2026 14:27:35 GMT","cache-control":"public, max-age=31536000, immutable","x-goog-generation":"1755088699334730","x-jsr-cache-id":"FRA","access-control-allow-origin":"*","x-goog-stored-content-encoding":"identity","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-hash":"crc32c=Nf7uhg==,md5=MJPIklBqRcHmsZUbnpFBDg==","x-goog-storage-class":"STANDARD","x-goog-stored-content-length":"920","content-length":"920","via":"1.1 google","last-modified":"Wed, 13 Aug 2025 12:38:19 GMT","etag":"\"3093c892506a45c1e6b1951b9e91410e\"","x-robots-tag":"noindex","server":"UploadServer","access-control-expose-headers":"*"},"url":"https://jsr.io/@std/path/1.1.2/common.ts","time":1762267730}
