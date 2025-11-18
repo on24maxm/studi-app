@@ -1,0 +1,9 @@
+.deno_cache
+deno_dir
+
+deno.lock
+
+.env
+
+.git
+.gitignore
