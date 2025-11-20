@@ -39,7 +39,7 @@ const handlelogin = async () => {
 </script>
 <template>
     <div class="flex flex-col justify-center items-center w-screen h-screen gap-8 pb-20 bg-gray-100">
-        <h1 class="font-sans text-6xl">Erstmal einloggen min jung</h1>
+        <h1 class="font-sans text-6xl">Einloggen</h1>
         
         <form @submit.prevent="handlelogin" class="flex flex-col items-center">
             <input class="border m-2 p-1" placeholder="Benutzername" v-model="username"></input>
